@@ -61,7 +61,7 @@ export default function AscensionChambers() {
           <div className="facility-image-card">
             <div className="facility-image-overlay" />
             <img 
-              src="/hero-gym.png" 
+              src="/hero-gym.webp" 
               alt="Saiyan Gym Elite Facility" 
               className="facility-image"
               loading="lazy"

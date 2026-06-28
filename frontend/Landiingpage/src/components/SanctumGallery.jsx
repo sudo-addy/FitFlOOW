@@ -99,7 +99,7 @@ export default function SanctumGallery() {
             <div className="gallery-image-wrapper">
               <div className="gallery-image-zoom-overlay" />
               <img 
-                src="/gym-weight-room.png" 
+                src="/gym-weight-room.webp" 
                 alt="Hyperbolic Power Temple" 
                 className="gallery-image"
                 draggable="false"
@@ -120,7 +120,7 @@ export default function SanctumGallery() {
             <div className="gallery-image-wrapper">
               <div className="gallery-image-zoom-overlay" />
               <img 
-                src="/gym-recovery-spa.png" 
+                src="/gym-recovery-spa.webp" 
                 alt="Zen Recovery Vault" 
                 className="gallery-image"
                 draggable="false"
@@ -141,7 +141,7 @@ export default function SanctumGallery() {
             <div className="gallery-image-wrapper">
               <div className="gallery-image-zoom-overlay" />
               <img 
-                src="/hero-gym.png" 
+                src="/hero-gym.webp" 
                 alt="Ki Bio-Arena conditioning floor" 
                 className="gallery-image"
                 draggable="false"

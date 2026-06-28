@@ -1,125 +1,84 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import React from 'react';
 import BackgroundCanvas from './BackgroundCanvas';
 import './Hero.css';
 
 export default function Hero() {
-  const containerRef = useRef(null);
-  const leftContentRef = useRef(null);
-  const rightImageRef = useRef(null);
-  const navRef = useRef(null);
-
-  useEffect(() => {
-    // Entrance animations
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1.2 } });
-
-    tl.fromTo(navRef.current, { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
-      .fromTo(leftContentRef.current.children, 
-        { y: 40, opacity: 0 }, 
-        { y: 0, opacity: 1, stagger: 0.15 }, 
-        '-=0.4'
-      )
-      .fromTo(rightImageRef.current, 
-        { scale: 1.1, opacity: 0 }, 
-        { scale: 1, opacity: 1, duration: 1.5 }, 
-        '-=0.8'
-      );
-  }, []);
-
   return (
-    <div className="hero-split-container" ref={containerRef}>
+    <section className="hero-section" style={{ height: '100dvh' }}>
+      {/* 1. Base Background Image (z-index: 10) */}
+      <div 
+        className="hero-base-bg hero-zoom" 
+        style={{ backgroundImage: `url('/hero-goku-hd.png')` }}
+      />
+
+      {/* 2. Floating Amber Particles (z-index: 40) */}
       <BackgroundCanvas />
-      {/* Top Navbar */}
-      <header className="navbar-template" ref={navRef}>
-        <div className="logo-section">
-          {/* Hexagonal logo icon */}
-          <div className="logo-hex">
-            <span className="hex-inner"></span>
-          </div>
-          <div className="logo-text-group">
-            <span className="logo-main">SAIYAN GYM</span>
-            <span className="logo-sub">YOUR BUSINESS SLOGAN HERE</span>
-          </div>
-        </div>
-        <nav className="nav-menu">
-          <a href="#home" className="active">Home</a>
-          <a href="#menu">Menu</a>
-          <a href="#info">Info</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </header>
 
-      {/* Main Content Area */}
-      <div className="split-layout">
-        {/* Left Content Column */}
-        <div className="left-column">
-          <div className="content-wrapper" ref={leftContentRef}>
-            <h1 className="main-heading">
-              <span className="line-white">BE STRONG BUILD</span>
-              <span className="line-red">YOUR DREAM BODY</span>
-            </h1>
-            <p className="description">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam 
-              nonummy nibh euismod tincidunt ut laoreet dolore magna ali. Train 
-              like a legend and ascend past your base limits.
-            </p>
-            <button className="learn-more-btn">
-              Learn More
-            </button>
-          </div>
-
-          {/* Decorative Dot Grid */}
-          <div className="decoration-dots">
-            {Array.from({ length: 28 }).map((_, i) => (
-              <span key={i} className="dot"></span>
-            ))}
-          </div>
-
-          {/* Decorative Striped Semi-circle (bottom center of left side) */}
-          <div className="decoration-lines">
-            <div className="lines-inner"></div>
-          </div>
+      {/* 3. Top Fixed Navigation overlay (z-index: 100) */}
+      <nav className="fixed-navbar">
+        {/* Left: Logo & Slogan */}
+        <div className="nav-logo-group">
+          <svg className="nav-logo-svg" viewBox="0 0 256 256" fill="#ffffff">
+            <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
+          </svg>
+          <span className="nav-wordmark font-playfair italic">Saiyan Gym</span>
         </div>
 
-        {/* Right Image Column with Goku */}
-        <div className="right-column" ref={rightImageRef}>
-          <div className="image-viewport">
-            <img 
-              src="/hero-goku-hd.png" 
-              alt="Goku Training Grounds" 
-              className="split-hero-image"
-            />
-          </div>
-
-          {/* Social Media Column (far right) */}
-          <div className="social-column">
-            <a href="#facebook" className="social-link-btn" aria-label="Facebook">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="social-icon">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-              </svg>
-            </a>
-            <a href="#twitter" className="social-link-btn" aria-label="Twitter">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="social-icon">
-                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-              </svg>
-            </a>
-            <a href="#linkedin" className="social-link-btn" aria-label="LinkedIn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="social-icon">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect x="2" y="9" width="4" height="12"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-            </a>
-            <a href="#instagram" className="social-link-btn" aria-label="Instagram">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="social-icon">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </a>
-          </div>
+        {/* Center: Navigation Pill */}
+        <div className="nav-center-pill">
+          <button className="nav-pill-btn active">Home</button>
+          <button className="nav-pill-btn">Facilities</button>
+          <button className="nav-pill-btn">Methodology</button>
+          <button className="nav-pill-btn">Programs</button>
+          <button className="nav-pill-btn">Join Now</button>
         </div>
+
+        {/* Right: Signup Portal */}
+        <div className="nav-right-btn-group">
+          <button className="nav-signup-btn">Member Portal</button>
+        </div>
+      </nav>
+
+      {/* 4. Center Heading (z-index: 50) */}
+      <div className="hero-heading-container">
+        <h1 className="hero-heading">
+          <span 
+            className="hero-heading-line-1 font-playfair italic hero-anim hero-reveal"
+            style={{ animationDelay: '0.25s', letterSpacing: '-0.05em' }}
+          >
+            Awaken your
+          </span>
+          <span 
+            className="hero-heading-line-2 hero-anim hero-reveal"
+            style={{ animationDelay: '0.42s', letterSpacing: '-0.08em', marginTop: '-4px' }}
+          >
+            Limitless Power
+          </span>
+        </h1>
       </div>
-    </div>
+
+      {/* 5. Bottom-Left Paragraph (z-index: 50) */}
+      <div 
+        className="hero-paragraph-left hero-anim hero-fade"
+        style={{ animationDelay: '0.7s' }}
+      >
+        <p className="hero-desc-left">
+          Every session at Saiyan Gym is designed to break your boundaries. From high-performance strength training to elite athletic conditioning, we rebuild your physical limits.
+        </p>
+      </div>
+
+      {/* 6. Bottom-Right Block with CTA (z-index: 50) */}
+      <div 
+        className="hero-paragraph-right hero-anim hero-fade"
+        style={{ animationDelay: '0.85s' }}
+      >
+        <p className="hero-desc-right">
+          Our world-class equipment and custom biomechanical tracking let you unlock your body's true potential. Stop training for maintenance—start training for ascension.
+        </p>
+        <button className="hero-cta-btn">
+          Start Ascending
+        </button>
+      </div>
+    </section>
   );
 }

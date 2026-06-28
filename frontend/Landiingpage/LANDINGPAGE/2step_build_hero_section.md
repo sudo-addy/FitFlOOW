@@ -4,7 +4,7 @@ Create the Hero Section.
 
 The uploaded image must become the primary visual.
 
-Do not replace it.
+Do not replace it.d
 
 Requirements:
 - Full screen hero

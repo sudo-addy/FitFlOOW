@@ -8,7 +8,7 @@ export default function Hero() {
       {/* 1. Base Background Image (z-index: 10) */}
       <div 
         className="hero-base-bg hero-zoom" 
-        style={{ backgroundImage: `url('/hero-goku-hd.png')` }}
+        style={{ backgroundImage: `url('/hero-goku-hd.png?v=4')` }}
       />
 
       {/* 2. Floating Amber Particles (z-index: 40) */}

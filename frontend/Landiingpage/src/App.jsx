@@ -20,6 +20,7 @@ function App() {
       wheelMultiplier: 1.0,
       infinite: false,
     });
+    window.lenis = lenis;
 
     // Animate loop to request animation frame steps
     function raf(time) {

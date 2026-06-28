@@ -1,10 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import BackgroundCanvas from './BackgroundCanvas';
 import './Hero.css';
 
 export default function Hero() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  useEffect(() => {
+    const handleScrollSpy = () => {
+      const sections = ['home', 'chambers', 'philosophy', 'gallery', 'cta'];
+      let currentSection = 'home';
+      
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // If the top of the section is at or above 35% of the viewport height
+          if (rect.top <= window.innerHeight * 0.35) {
+            currentSection = sectionId;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScrollSpy);
+    return () => window.removeEventListener('scroll', handleScrollSpy);
+  }, []);
+
+  const handleNavClick = (sectionId) => {
+    if (window.lenis) {
+      window.lenis.scrollTo(`#${sectionId}`);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <section className="hero-section" style={{ height: '100dvh' }}>
+    <section id="home" className="hero-section" style={{ height: '100dvh' }}>
       {/* 1. Base Background Image (z-index: 10) */}
       <div 
         className="hero-base-bg hero-zoom" 
@@ -17,7 +50,7 @@ export default function Hero() {
       {/* 3. Top Fixed Navigation overlay (z-index: 100) */}
       <nav className="fixed-navbar">
         {/* Left: Logo & Slogan */}
-        <div className="nav-logo-group">
+        <div className="nav-logo-group" style={{ cursor: 'pointer' }} onClick={() => handleNavClick('home')}>
           <svg className="nav-logo-svg" viewBox="0 0 256 256" fill="#ffffff">
             <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
           </svg>
@@ -26,16 +59,43 @@ export default function Hero() {
 
         {/* Center: Navigation Pill */}
         <div className="nav-center-pill">
-          <button className="nav-pill-btn active">Home</button>
-          <button className="nav-pill-btn">Facilities</button>
-          <button className="nav-pill-btn">Methodology</button>
-          <button className="nav-pill-btn">Programs</button>
-          <button className="nav-pill-btn">Join Now</button>
+          <button 
+            className={`nav-pill-btn ${activeSection === 'home' ? 'active' : ''}`}
+            onClick={() => handleNavClick('home')}
+          >
+            Home
+          </button>
+          <button 
+            className={`nav-pill-btn ${activeSection === 'chambers' ? 'active' : ''}`}
+            onClick={() => handleNavClick('chambers')}
+          >
+            Facilities
+          </button>
+          <button 
+            className={`nav-pill-btn ${activeSection === 'philosophy' ? 'active' : ''}`}
+            onClick={() => handleNavClick('philosophy')}
+          >
+            Methodology
+          </button>
+          <button 
+            className={`nav-pill-btn ${activeSection === 'gallery' ? 'active' : ''}`}
+            onClick={() => handleNavClick('gallery')}
+          >
+            Programs
+          </button>
+          <button 
+            className={`nav-pill-btn ${activeSection === 'cta' ? 'active' : ''}`}
+            onClick={() => handleNavClick('cta')}
+          >
+            Join Now
+          </button>
         </div>
 
         {/* Right: Signup Portal */}
         <div className="nav-right-btn-group">
-          <button className="nav-signup-btn">Member Portal</button>
+          <button className="nav-signup-btn" onClick={() => handleNavClick('cta')}>
+            Member Portal
+          </button>
         </div>
       </nav>
 

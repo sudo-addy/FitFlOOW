@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import BackgroundCanvas from './BackgroundCanvas';
 import './Hero.css';
 
 export default function Hero() {
@@ -27,6 +28,7 @@ export default function Hero() {
 
   return (
     <div className="hero-split-container" ref={containerRef}>
+      <BackgroundCanvas />
       {/* Top Navbar */}
       <header className="navbar-template" ref={navRef}>
         <div className="logo-section">

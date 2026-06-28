@@ -11,7 +11,7 @@ export default function BackgroundCanvas() {
 
     let animationFrameId;
     let particles = [];
-    const particleCount = 60;
+    const particleCount = 35; // Lower density for a clean, non-distracting background
 
     // Handle resize
     const handleResize = () => {
@@ -30,16 +30,19 @@ export default function BackgroundCanvas() {
       reset(init = false) {
         this.x = Math.random() * canvas.width;
         this.y = init ? Math.random() * canvas.height : canvas.height + 10;
-        this.radius = Math.random() * 1.5 + 0.5;
-        this.vy = -(Math.random() * 0.4 + 0.15); // drift upwards
-        this.vx = (Math.random() - 0.5) * 0.2; // slight drift sideways
-        this.alpha = Math.random() * 0.5 + 0.2;
-        this.fadeSpeed = Math.random() * 0.005 + 0.002;
+        this.radius = Math.random() * 2 + 0.5; // subtle size variety
+        this.vy = -(Math.random() * 0.25 + 0.1); // slow upward movement
+        this.vx = (Math.random() - 0.5) * 0.15; // very gentle drift sideways
+        this.alpha = Math.random() * 0.5 + 0.1;
+        this.fadeSpeed = Math.random() * 0.003 + 0.001;
+        this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+        this.twinklePhase = Math.random() * Math.PI * 2;
       }
 
       update() {
         this.y += this.vy;
         this.x += this.vx;
+        this.twinklePhase += this.twinkleSpeed;
         
         // fade out as they reach the top 20%
         if (this.y < canvas.height * 0.2) {
@@ -55,10 +58,13 @@ export default function BackgroundCanvas() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         
-        // Gold/orange glow
-        ctx.fillStyle = `rgba(255, 136, 0, ${this.alpha})`;
-        ctx.shadowColor = 'rgba(255, 170, 0, 0.4)';
-        ctx.shadowBlur = 8;
+        // Twinkling effect using sin wave on alpha
+        const currentAlpha = Math.max(0.02, this.alpha * (0.7 + 0.3 * Math.sin(this.twinklePhase)));
+        
+        // Amber/Orange sunset colors
+        ctx.fillStyle = `rgba(245, 158, 11, ${currentAlpha})`; // Amber accent
+        ctx.shadowColor = 'rgba(234, 88, 12, 0.5)'; // Warm orange glow
+        ctx.shadowBlur = this.radius * 3; // Soft blur proportional to size
         ctx.fill();
         ctx.shadowBlur = 0; // reset shadow for performance
       }

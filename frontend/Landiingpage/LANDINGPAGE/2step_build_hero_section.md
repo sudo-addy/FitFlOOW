@@ -10,6 +10,8 @@ Requirements:
 - Full screen hero
 - Cinematic layout
 - Premium typography
+- premium heading 
+- longer viso 
 - Strong CTA
 - Elegant spacing
 - Responsive

@@ -6,6 +6,8 @@ export default function Hero() {
   const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScrollSpy = () => {
       const sections = ['home', 'chambers', 'philosophy', 'gallery', 'cta'];
       const centerline = window.innerHeight * 0.45; // 45% from the top of the viewport
@@ -23,10 +25,18 @@ export default function Hero() {
         }
       }
       setActiveSection(currentSection);
+      ticking = false;
     };
 
-    window.addEventListener('scroll', handleScrollSpy);
-    return () => window.removeEventListener('scroll', handleScrollSpy);
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScrollSpy);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const handleNavClick = (sectionId) => {

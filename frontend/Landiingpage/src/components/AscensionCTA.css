@@ -1,0 +1,204 @@
+.cta-section {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  padding: 6rem 1.25rem;
+  background-color: #050201;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (min-width: 768px) {
+  .cta-section {
+    padding: 8rem 2.5rem;
+    min-height: 85vh;
+  }
+}
+
+/* Background image overlay (Goku 4K subtle mask) */
+.cta-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  filter: blur(8px);
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cta-section.animate-in .cta-bg-overlay {
+  opacity: 0.11; /* subtle background visibility */
+}
+
+/* Subtle vertical grid lines (tech/architectural theme) */
+.cta-bg-grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.grid-line {
+  width: 1px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* CTA Container block */
+.cta-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.cta-label-wrapper {
+  justify-content: center;
+  margin-bottom: 2rem;
+  width: auto;
+}
+
+.cta-heading {
+  font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+  line-height: 1.05;
+  font-weight: normal;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  text-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+}
+
+.cta-heading .highlight-text {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.cta-description {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 3rem;
+  letter-spacing: -0.01em;
+}
+
+/* Buttons group */
+.cta-button-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .cta-button-group {
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+    gap: 1.25rem;
+  }
+}
+
+.cta-btn-primary {
+  background-color: #e8702a;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.85rem 2.2rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(232, 112, 42, 0.25);
+  will-change: transform, box-shadow;
+}
+
+@media (min-width: 640px) {
+  .cta-btn-primary {
+    width: auto;
+  }
+}
+
+.cta-btn-primary:hover {
+  background-color: #d2611f;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(232, 112, 42, 0.45);
+}
+
+.cta-btn-primary:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.cta-btn-secondary {
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.85rem 2.2rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  width: 100%;
+  transition: all 220ms ease;
+  will-change: transform;
+}
+
+@media (min-width: 640px) {
+  .cta-btn-secondary {
+    width: auto;
+  }
+}
+
+.cta-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: #ffffff;
+  transform: translateY(-3px);
+}
+
+.cta-btn-secondary:active {
+  transform: translateY(-1px);
+}
+
+/* --- Entrance Reveals --- */
+.cta-container > * {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Triggered reveal state */
+.cta-section.animate-in .cta-container > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cta-section.animate-in .cta-container .cta-label-wrapper {
+  transition-delay: 0.1s;
+}
+.cta-section.animate-in .cta-container .cta-heading {
+  transition-delay: 0.25s;
+}
+.cta-section.animate-in .cta-container .cta-description {
+  transition-delay: 0.4s;
+}
+.cta-section.animate-in .cta-container .cta-button-group {
+  transition-delay: 0.55s;
+}

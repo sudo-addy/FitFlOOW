@@ -3,6 +3,7 @@ import Hero from './components/Hero'
 import BrandPhilosophy from './components/BrandPhilosophy'
 import AscensionChambers from './components/AscensionChambers'
 import SanctumGallery from './components/SanctumGallery'
+import AscensionCTA from './components/AscensionCTA'
 import './App.css'
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
       <AscensionChambers />
       {/* Step 10 — Sanctum Gallery Section */}
       <SanctumGallery />
+      {/* Step 11 — Ascension CTA Section */}
+      <AscensionCTA />
     </main>
   )
 }

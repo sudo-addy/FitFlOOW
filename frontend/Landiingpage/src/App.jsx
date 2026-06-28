@@ -39,10 +39,10 @@ function App() {
     <main className="app-container">
       {/* Step 2 — Hero Section */}
       <Hero />
-      {/* Step 3 — Brand Philosophy Section */}
-      <BrandPhilosophy />
-      {/* Step 8 — Ascension Chambers Section */}
+      {/* Step 8 — Ascension Chambers Section (Facilities) */}
       <AscensionChambers />
+      {/* Step 3 — Brand Philosophy Section (Methodology) */}
+      <BrandPhilosophy />
       {/* Step 10 — Sanctum Gallery Section */}
       <SanctumGallery />
       {/* Step 11 — Ascension CTA Section */}

@@ -8,15 +8,17 @@ export default function Hero() {
   useEffect(() => {
     const handleScrollSpy = () => {
       const sections = ['home', 'chambers', 'philosophy', 'gallery', 'cta'];
+      const centerline = window.innerHeight * 0.45; // 45% from the top of the viewport
       let currentSection = 'home';
       
       for (const sectionId of sections) {
         const el = document.getElementById(sectionId);
         if (el) {
           const rect = el.getBoundingClientRect();
-          // If the top of the section is at or above 35% of the viewport height
-          if (rect.top <= window.innerHeight * 0.35) {
+          // If the section spans across the centerline of the viewport
+          if (rect.top <= centerline && rect.bottom >= centerline) {
             currentSection = sectionId;
+            break; // Active section found, exit loop
           }
         }
       }
@@ -29,7 +31,8 @@ export default function Hero() {
 
   const handleNavClick = (sectionId) => {
     if (window.lenis) {
-      window.lenis.scrollTo(`#${sectionId}`);
+      // Scroll with a -80px offset to account for the fixed glass navbar
+      window.lenis.scrollTo(`#${sectionId}`, { offset: -80 });
     } else {
       const el = document.getElementById(sectionId);
       if (el) el.scrollIntoView({ behavior: 'smooth' });

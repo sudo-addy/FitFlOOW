@@ -14,7 +14,7 @@ export default function AscensionChambers() {
         }
       },
       {
-        threshold: 0.1, // Trigger when 10% of the section is visible
+        threshold: 0.02, // Trigger as soon as 2% of the section enters the screen
       }
     );
 

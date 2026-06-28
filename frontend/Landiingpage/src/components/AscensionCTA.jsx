@@ -14,7 +14,7 @@ export default function AscensionCTA() {
         }
       },
       {
-        threshold: 0.15,
+        threshold: 0.02, // Trigger as soon as 2% of the section enters the screen
       }
     );
 

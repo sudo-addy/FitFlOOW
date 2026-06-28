@@ -146,46 +146,17 @@
 }
 
 /* ---------------------------------------------------- */
-/* GPU-Accelerated Scroll Animation Transition Cascade */
+/* GPU-Accelerated GSAP Scroll Anim Base States         */
 /* ---------------------------------------------------- */
-.philosophy-section .philosophy-heading,
-.philosophy-section .philosophy-narrative,
-.philosophy-section .pillar-column {
+.section-subtitle-wrapper,
+.philosophy-heading,
+.philosophy-quote,
+.philosophy-body,
+.pillar-column {
   opacity: 0;
   transform: translateY(40px) translateZ(0);
   backface-visibility: hidden;
   will-change: transform, opacity;
-  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.philosophy-section.animate-in .philosophy-heading {
-  opacity: 1;
-  transform: translateY(0) translateZ(0);
-  transition-delay: 0.1s;
-}
-
-.philosophy-section.animate-in .philosophy-narrative {
-  opacity: 1;
-  transform: translateY(0) translateZ(0);
-  transition-delay: 0.3s;
-}
-
-.philosophy-section.animate-in .pillar-column:nth-child(1) {
-  opacity: 1;
-  transform: translateY(0) translateZ(0);
-  transition-delay: 0.5s;
-}
-
-.philosophy-section.animate-in .pillar-column:nth-child(2) {
-  opacity: 1;
-  transform: translateY(0) translateZ(0);
-  transition-delay: 0.65s;
-}
-
-.philosophy-section.animate-in .pillar-column:nth-child(3) {
-  opacity: 1;
-  transform: translateY(0) translateZ(0);
-  transition-delay: 0.8s;
 }
 
 /* ----------------------------------------- */

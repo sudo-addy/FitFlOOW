@@ -1,38 +1,43 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './BrandPhilosophy.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function BrandPhilosophy() {
   const sectionRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
+    const ctx = gsap.context(() => {
+      // Staggered fade and slide-up reveal for elements
+      gsap.fromTo(
+        ['.section-subtitle-wrapper', '.philosophy-heading', '.philosophy-quote', '.philosophy-body', '.philosophy-grid-item'],
+        {
+          opacity: 0,
+          y: 40,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power4.out',
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 85%', // trigger when top of section is 85% down the viewport
+            toggleActions: 'play none none none', // play once
+          },
         }
-      },
-      {
-        threshold: 0.15, // Trigger when 15% of the section is visible
-      }
-    );
+      );
+    }, sectionRef);
 
-    const currentSection = sectionRef.current;
-    if (currentSection) {
-      observer.observe(currentSection);
-    }
-
-    return () => {
-      if (currentSection) {
-        observer.unobserve(currentSection);
-      }
-    };
+    return () => ctx.revert(); // clean up GSAP animations on unmount
   }, []);
 
   return (
     <section 
-      className={`philosophy-section ${isVisible ? 'animate-in' : ''}`} 
+      className="philosophy-section" 
       ref={sectionRef}
       id="philosophy"
     >

@@ -18,7 +18,7 @@ Requirements:
 - Animated background
 - Smooth entrance animations
 - Floating particles only if they match the design
-- Glassmorphism only if appropriate
+- Glassmorphism only if appropriatek
 - The uploaded image must remain the visual focus.
 
 If suitable, create subtle 3D movement using:

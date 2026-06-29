@@ -16,26 +16,27 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      {/* ========== Background ========== */}
+      {/* ===== Background ===== */}
       <div className="login-bg">
         <div
           className="login-bg-img"
           style={{ backgroundImage: `url('/login-bg-goku.png')` }}
         />
         <div className="login-bg-gradient" />
-        <div className="login-bg-vignette" />
       </div>
 
-      {/* ========== Floating Embers ========== */}
+      {/* ===== Ambient Embers ===== */}
       <div className="login-embers">
-        {[...Array(10)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <div key={i} className="ember" />
         ))}
       </div>
 
-      {/* ========== Navbar ========== */}
+      {/* ===== Subtle HUD Scanlines ===== */}
+      <div className="login-scanlines" />
+
+      {/* ===== Navbar ===== */}
       <nav className="login-navbar">
-        {/* Left: Logo */}
         <Link to="/" className="login-nav-logo">
           <svg className="login-nav-logo-svg" viewBox="0 0 256 256" fill="#ffffff">
             <path d="M 256 256 L 128 256 L 0 128 L 128 128 Z M 256 128 L 128 128 L 0 0 L 128 0 Z" />
@@ -43,7 +44,6 @@ export default function LoginPage() {
           <span className="login-nav-wordmark">Saiyan Gym</span>
         </Link>
 
-        {/* Center: Nav Pills */}
         <div className="login-nav-center">
           <Link to="/" className="login-nav-link">Home</Link>
           <Link to="/#chambers" className="login-nav-link">Facilities</Link>
@@ -52,10 +52,8 @@ export default function LoginPage() {
           <Link to="/#cta" className="login-nav-link">Join Now</Link>
         </div>
 
-        {/* Right: Member Portal */}
         <div className="login-nav-right">
           <button className="login-nav-portal-btn">
-            {/* User circle icon */}
             <svg className="login-nav-portal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
@@ -65,10 +63,10 @@ export default function LoginPage() {
         </div>
       </nav>
 
-      {/* ========== Main Content ========== */}
+      {/* ===== Main Content ===== */}
       <div className="login-content">
 
-        {/* ---------- Left Panel: Tagline + Stats ---------- */}
+        {/* --- Left: Tagline + Stats --- */}
         <div className="login-left-panel">
           <div className="login-tagline">
             <span className="login-tagline-sub">Your journey didn't stop.</span>
@@ -76,10 +74,9 @@ export default function LoginPage() {
           </div>
 
           <div className="login-stats-row">
-            {/* Stat: Warriors */}
             <div className="login-stat-card">
               <svg className="login-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+                <circle cx="12" cy="12" r="10" />
                 <path d="M8 14s1.5 2 4 2 4-2 4-2" />
                 <line x1="9" y1="9" x2="9.01" y2="9" />
                 <line x1="15" y1="9" x2="15.01" y2="9" />
@@ -90,7 +87,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Stat: Workouts */}
             <div className="login-stat-card">
               <svg className="login-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
@@ -101,7 +97,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Stat: Transformation */}
             <div className="login-stat-card">
               <svg className="login-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="19" x2="12" y2="5" />
@@ -115,10 +110,10 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* ---------- Right Panel: Login Card ---------- */}
+        {/* --- Right: Login Card --- */}
         <div className="login-right-panel">
           <div className="login-card">
-            {/* Dragon Ball ornament */}
+            {/* Dragon Ball top ornament */}
             <div className="login-dragonball-ornament">
               <div className="dragonball-main">
                 <span className="db-star" />
@@ -187,7 +182,6 @@ export default function LoginPage() {
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? (
-                        /* Eye-off icon */
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
                           <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
@@ -195,7 +189,6 @@ export default function LoginPage() {
                           <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
                         </svg>
                       ) : (
-                        /* Eye icon */
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                           <circle cx="12" cy="12" r="3" />
@@ -205,7 +198,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {/* Remember Me + Forgot Password */}
+                {/* Options */}
                 <div className="login-options-row">
                   <label className="login-remember">
                     <input
@@ -219,7 +212,7 @@ export default function LoginPage() {
                   <button type="button" className="login-forgot-link">Forgot Password?</button>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit */}
                 <button type="submit" className="login-submit-btn">
                   ENTER THE SANCTUM
                   <svg className="login-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -235,10 +228,9 @@ export default function LoginPage() {
                   <div className="login-divider-line" />
                 </div>
 
-                {/* Social Buttons */}
+                {/* Social */}
                 <div className="login-social-row">
                   <button type="button" className="login-social-btn">
-                    {/* Google icon */}
                     <svg className="login-social-icon" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -248,7 +240,6 @@ export default function LoginPage() {
                     Google
                   </button>
                   <button type="button" className="login-social-btn">
-                    {/* Apple icon */}
                     <svg className="login-social-icon" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                     </svg>
@@ -256,7 +247,7 @@ export default function LoginPage() {
                   </button>
                 </div>
 
-                {/* Sign Up Link */}
+                {/* Sign up */}
                 <div className="login-signup-row">
                   <span className="login-signup-text">
                     New here?{' '}
@@ -271,7 +262,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ========== Dragon Ball Side Decoration ========== */}
+      {/* ===== Dragon Ball Side Decoration ===== */}
       <div className="login-dragonballs-side">
         {[1, 2, 3, 4, 5, 6, 7].map((count) => (
           <div key={count} className="db-side-ball">
@@ -282,7 +273,7 @@ export default function LoginPage() {
         ))}
       </div>
 
-      {/* ========== Footer ========== */}
+      {/* ===== Footer ===== */}
       <footer className="login-footer">
         <span className="login-footer-left">© 2025 Saiyan Gym. All rights reserved.</span>
         <div className="login-footer-center">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import BackgroundCanvas from './BackgroundCanvas';
 import './Hero.css';
 
@@ -106,9 +107,9 @@ export default function Hero() {
 
         {/* Right: Signup Portal */}
         <div className="nav-right-btn-group">
-          <button className="nav-signup-btn" onClick={() => handleNavClick('cta')}>
+          <Link to="/login" className="nav-signup-btn" style={{ textDecoration: 'none' }}>
             Member Portal
-          </button>
+          </Link>
         </div>
       </nav>
 

@@ -41,7 +41,7 @@ export default function AscensionChambers() {
         {/* Left Side: Layout Intro & Facility Graphic */}
         <div className="chambers-intro-col">
           <div className="section-subtitle-wrapper">
-            <span className="section-number">02</span>
+            <span className="section-number">01</span>
             <span className="section-subtitle-line"></span>
             <span className="section-subtitle">THE LABS</span>
           </div>

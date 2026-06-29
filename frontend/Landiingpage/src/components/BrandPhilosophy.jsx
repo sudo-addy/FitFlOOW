@@ -12,7 +12,7 @@ export default function BrandPhilosophy() {
     const ctx = gsap.context(() => {
       // Staggered fade and slide-up reveal for elements
       gsap.fromTo(
-        ['.section-subtitle-wrapper', '.philosophy-heading', '.philosophy-quote', '.philosophy-body', '.philosophy-grid-item'],
+        ['.section-subtitle-wrapper', '.philosophy-heading', '.philosophy-quote', '.philosophy-body', '.pillar-column'],
         {
           opacity: 0,
           y: 40,
@@ -45,7 +45,7 @@ export default function BrandPhilosophy() {
         
         {/* Header Label */}
         <div className="section-subtitle-wrapper">
-          <span className="section-number">01</span>
+          <span className="section-number">02</span>
           <span className="section-subtitle-line"></span>
           <span className="section-subtitle">THE VISION</span>
         </div>

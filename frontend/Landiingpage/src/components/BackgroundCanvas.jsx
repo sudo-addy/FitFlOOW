@@ -12,6 +12,12 @@ export default function BackgroundCanvas() {
 
     // Helper functions for WebGL and 2D Canvas setup
     const initWebGL = (canvasElement) => {
+      let isVisible = true;
+      const observer = new IntersectionObserver(([entry]) => {
+        isVisible = entry.isIntersecting;
+      }, { threshold: 0 });
+      observer.observe(canvasElement);
+
       // 1. Scene setup
       const scene = new THREE.Scene();
       
@@ -276,6 +282,7 @@ export default function BackgroundCanvas() {
 
       const animate = () => {
         animationId = requestAnimationFrame(animate);
+        if (!isVisible) return;
 
         const elapsedTime = clock.getElapsedTime();
         
@@ -312,6 +319,7 @@ export default function BackgroundCanvas() {
 
       // Return cleanup function
       return () => {
+        observer.disconnect();
         cancelAnimationFrame(animationId);
         window.removeEventListener('mousemove', handleMouseMove);
         window.removeEventListener('scroll', handleScroll);
@@ -331,6 +339,12 @@ export default function BackgroundCanvas() {
     };
 
     const init2D = (canvasElement) => {
+      let isVisible = true;
+      const observer = new IntersectionObserver(([entry]) => {
+        isVisible = entry.isIntersecting;
+      }, { threshold: 0 });
+      observer.observe(canvasElement);
+
       const ctx = canvasElement.getContext('2d');
       if (!ctx) return () => {};
 
@@ -391,16 +405,19 @@ export default function BackgroundCanvas() {
       }
 
       const animate = () => {
-        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        particles.forEach(p => {
-          p.update();
-          p.draw();
-        });
+        if (isVisible) {
+          ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+          particles.forEach(p => {
+            p.update();
+            p.draw();
+          });
+        }
         animationFrameId = requestAnimationFrame(animate);
       };
       animate();
 
       return () => {
+        observer.disconnect();
         window.removeEventListener('resize', handleResize);
         cancelAnimationFrame(animationFrameId);
       };
@@ -428,7 +445,7 @@ export default function BackgroundCanvas() {
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 1,
+        zIndex: 11,
         pointerEvents: 'none',
         opacity: 0.85,
       }}

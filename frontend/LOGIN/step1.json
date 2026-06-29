@@ -1,0 +1,525 @@
+{
+  "version": "2.0",
+  "project": {
+    "name": "FitFlOOW Member Portal",
+    "page": "Premium Login Experience",
+    "theme": "Dragon Ball Inspired Ascension",
+    "style": "AAA Cinematic Luxury SaaS",
+    "goal": "Create a login experience that feels like entering an elite Saiyan training sanctuary rather than a traditional authentication page."
+  },
+
+  "core_design_principles": {
+    "experience_over_ui": true,
+    "cinematic": true,
+    "premium": true,
+    "minimal": true,
+    "immersive": true,
+    "high_fps": true,
+    "gpu_accelerated": true
+  },
+
+  "layout": {
+    "type": "Split Hero Experience",
+    "left": {
+      "width": "55%",
+      "purpose": "Immersive Storytelling"
+    },
+    "right": {
+      "width": "45%",
+      "purpose": "Authentication"
+    }
+  },
+
+  "theme": {
+    "world": "Floating Temple Sanctuary",
+    "inspiration": [
+      "Dragon Ball Z",
+      "Hyperbolic Time Chamber",
+      "Kami's Lookout",
+      "Tournament of Power",
+      "Volcanic Energy",
+      "Ancient Japanese Temples",
+      "Luxury Fitness"
+    ]
+  },
+
+  "3d_environment": {
+    "engine": "React Three Fiber",
+    "postprocessing": true,
+    "environment": {
+      "floating_islands": true,
+      "moving_clouds": true,
+      "depth_fog": true,
+      "volumetric_light": true,
+      "god_rays": true,
+      "distance_blur": true
+    },
+
+    "camera": {
+      "mouse_parallax": true,
+      "smooth_lerp": true,
+      "max_rotation": "4deg",
+      "depth_shift": true
+    }
+  },
+
+  "hero_character": {
+
+    "do_not_use_copyright_character": true,
+
+    "instead_create": {
+
+      "style": "Saiyan Inspired Warrior",
+
+      "features": [
+
+        "spiky hair silhouette",
+
+        "orange gi inspired clothing",
+
+        "standing on cliff",
+
+        "cape reacting to wind",
+
+        "subtle breathing animation",
+
+        "hair moving with wind",
+
+        "energy particles around feet"
+
+      ]
+    },
+
+    "animations": [
+
+      "idle breathing",
+
+      "cloth simulation",
+
+      "slow aura pulse",
+
+      "ambient movement"
+
+    ]
+  },
+
+  "dragon_balls": {
+
+    "count": 7,
+
+    "placement": "Floating Around Login Card",
+
+    "physics": {
+
+      "levitation": true,
+
+      "rotation": true,
+
+      "soft collision": true,
+
+      "mouse_repulsion": true
+
+    },
+
+    "hover": {
+
+      "glow": true,
+
+      "scale": 1.25,
+
+      "particle_burst": true
+
+    },
+
+    "click": {
+
+      "play_energy_wave": true
+
+    }
+
+  },
+
+  "energy_system": {
+
+    "ki_particles": {
+
+      "count": 250,
+
+      "movement": "spiral",
+
+      "opacity": "random",
+
+      "size": "dynamic"
+
+    },
+
+    "embers": {
+
+      "floating": true,
+
+      "wind_direction": "upward"
+
+    },
+
+    "energy_rings": {
+
+      "behind_card": true,
+
+      "slow_rotation": true,
+
+      "blurred": true
+
+    }
+
+  },
+
+  "background": {
+
+    "layers": [
+
+      "Sky",
+
+      "Mountains",
+
+      "Temple",
+
+      "Cloud Ocean",
+
+      "Foreground Rocks",
+
+      "Floating Embers",
+
+      "Volumetric Fog"
+
+    ],
+
+    "parallax": {
+
+      "enabled": true,
+
+      "layers": 7
+
+    }
+
+  },
+
+  "login_card": {
+
+    "style": "Premium Floating Glass",
+
+    "glass": {
+
+      "blur": "24px",
+
+      "opacity": 0.12,
+
+      "frosted": true
+
+    },
+
+    "border": {
+
+      "animated": true,
+
+      "gradient": [
+
+        "#ffaa00",
+
+        "#ff5500"
+
+      ],
+
+      "energy_travel": true
+
+    },
+
+    "shadow": {
+
+      "dynamic": true,
+
+      "react_to_mouse": true
+
+    },
+
+    "floating_animation": {
+
+      "translateY": "10px",
+
+      "duration": "6s",
+
+      "loop": true
+
+    }
+  },
+
+  "inputs": {
+
+    "glass": true,
+
+    "focus": {
+
+      "orange_glow": true,
+
+      "label_float": true,
+
+      "energy_line": true
+
+    },
+
+    "typing": {
+
+      "cursor_glow": true,
+
+      "particles": true
+
+    }
+
+  },
+
+  "button": {
+
+    "text": "ENTER THE SANCTUM",
+
+    "hover": {
+
+      "energy_wave": true,
+
+      "gradient_moves": true,
+
+      "shine_pass": true,
+
+      "scale": 1.03,
+
+      "glow": true
+
+    },
+
+    "click": {
+
+      "compress": true,
+
+      "energy_explosion": true,
+
+      "camera_shake": "very_small",
+
+      "sound_ready": true
+
+    },
+
+    "loading": {
+
+      "button_turns_into_energy_core": true,
+
+      "circular_ki_ring": true,
+
+      "progress_orbit": true
+
+    }
+
+  },
+
+  "mouse_interactions": {
+
+    "global_parallax": true,
+
+    "login_card_tilt": true,
+
+    "dragonballs_follow_cursor": true,
+
+    "embers_react": true,
+
+    "light_source_follows_cursor": true
+
+  },
+
+  "scroll_effects": {
+
+    "background_depth": true,
+
+    "camera_zoom": true,
+
+    "temple_moves_forward": true
+
+  },
+
+  "page_transition": {
+
+    "enter": {
+
+      "duration": "1500ms",
+
+      "effects": [
+
+        "fade",
+
+        "blur",
+
+        "camera_push",
+
+        "particles"
+
+      ]
+
+    },
+
+    "exit": {
+
+      "screen_becomes_energy",
+
+      "orange_flash",
+
+      "warp_transition",
+
+      "dashboard_reveal"
+
+    }
+
+  },
+
+  "hover_effects": {
+
+    "all_buttons": {
+
+      "lift": true,
+
+      "shadow_expand": true,
+
+      "cursor_glow": true
+
+    },
+
+    "inputs": {
+
+      "energy_outline": true
+
+    },
+
+    "logo": {
+
+      "slight_rotation": true,
+
+      "gold_reflection": true
+
+    },
+
+    "navigation": {
+
+      "animated_underline": true,
+
+      "energy_slide": true
+
+    }
+
+  },
+
+  "micro_interactions": [
+
+    "Floating dust reacts to cursor",
+
+    "Energy ripples on every click",
+
+    "Soft bloom when hovering card",
+
+    "Mouse creates wind trail",
+
+    "Background sunlight changes subtly",
+
+    "Card reflects mouse movement",
+
+    "Dragon Balls gently orbit",
+
+    "Clouds slowly drift",
+
+    "Temple emits soft light",
+
+    "Energy sparks appear while typing",
+
+    "Logo breathes",
+
+    "Button emits pulse every few seconds"
+  ],
+
+  "sound_system": {
+
+    "enabled": false,
+
+    "ready_for_future": true,
+
+    "effects": [
+
+      "hover",
+
+      "button",
+
+      "login_success",
+
+      "energy_pulse"
+
+    ]
+
+  },
+
+  "performance": {
+
+    "target_fps": 60,
+
+    "lazy_load_threejs": true,
+
+    "reduce_effects_mobile": true,
+
+    "gpu_acceleration": true,
+
+    "respect_prefers_reduced_motion": true
+  },
+
+  "tech_stack": {
+
+    "framework": "React + Vite",
+
+    "styling": "TailwindCSS",
+
+    "animation": [
+
+      "GSAP",
+
+      "Framer Motion"
+
+    ],
+
+    "3d": [
+
+      "React Three Fiber",
+
+      "@react-three/drei",
+
+      "@react-three/postprocessing"
+
+    ],
+
+    "particles": "Three.js GPU Particles",
+
+    "icons": "Lucide",
+
+    "state": "React Context"
+  },
+
+  "do_not": [
+
+    "Do not use generic login templates",
+
+    "Do not use static backgrounds",
+
+    "Do not use bright blue cyberpunk colors",
+
+    "Do not copy official Dragon Ball characters exactly",
+
+    "Do not sacrifice performance for effects",
+
+    "Do not overuse bloom",
+
+    "Do not use cheesy neon animations",
+
+    "Everything must feel cinematic, elegant, and premium."
+
+  ]
+}

@@ -49,87 +49,7 @@ export default function BackgroundCanvas() {
       pointLight.position.set(-2, 2, 3);
       scene.add(pointLight);
 
-      // 5. Dragon Ball Group
-      const ballGroup = new THREE.Group();
-      scene.add(ballGroup);
-
-      // 5a. Outer Glass Shell
-      const glassGeo = new THREE.SphereGeometry(1.6, 64, 64);
-      const glassMat = new THREE.MeshPhysicalMaterial({
-        color: 0xffaa00,
-        emissive: 0xff2200,
-        emissiveIntensity: 0.15,
-        roughness: 0.1,
-        metalness: 0.1,
-        transmission: 0.9,
-        thickness: 1.2,
-        ior: 1.5,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.05,
-        transparent: true,
-        opacity: 0.95
-      });
-      const glassMesh = new THREE.Mesh(glassGeo, glassMat);
-      ballGroup.add(glassMesh);
-
-      // 5b. Glowing Inner Core
-      const coreGeo = new THREE.SphereGeometry(1.1, 32, 32);
-      const coreMat = new THREE.MeshBasicMaterial({
-        color: 0xff5500,
-        transparent: true,
-        opacity: 0.4,
-        blending: THREE.AdditiveBlending
-      });
-      const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-      ballGroup.add(coreMesh);
-
-      // 5c. Extruded Red Stars
-      const starShape = new THREE.Shape();
-      const numPoints = 5;
-      const innerRadius = 0.06;
-      const outerRadius = 0.16;
-      const angleStep = Math.PI / numPoints;
-      for (let i = 0; i < numPoints * 2; i++) {
-        const angle = i * angleStep - Math.PI / 2; // Point upward
-        const radius = i % 2 === 0 ? outerRadius : innerRadius;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        if (i === 0) {
-          starShape.moveTo(x, y);
-        } else {
-          starShape.lineTo(x, y);
-        }
-      }
-      starShape.closePath();
-
-      const starGeo = new THREE.ExtrudeGeometry(starShape, {
-        depth: 0.04,
-        bevelEnabled: false
-      });
-      starGeo.center();
-
-      const starMat = new THREE.MeshStandardMaterial({
-        color: 0xef4444, // Crimson Red
-        emissive: 0x991b1b,
-        roughness: 0.2,
-        metalness: 0.1
-      });
-
-      // Positions for 5 stars in a pentagon configuration inside the core
-      const starPositions = [
-        { x: 0, y: 0.38, z: 0.1 },
-        { x: -0.38, y: 0.08, z: 0.1 },
-        { x: 0.38, y: 0.08, z: 0.1 },
-        { x: -0.24, y: -0.34, z: 0.1 },
-        { x: 0.24, y: -0.34, z: 0.1 }
-      ];
-
-      starPositions.forEach(pos => {
-        const starMesh = new THREE.Mesh(starGeo, starMat);
-        starMesh.position.set(pos.x, pos.y, pos.z);
-        starMesh.rotation.z = Math.random() * 0.2 - 0.1;
-        ballGroup.add(starMesh);
-      });
+      // 6. Particle system
 
       // 6. Particle system
       function createCircleTexture() {
@@ -237,9 +157,6 @@ export default function BackgroundCanvas() {
       // 7. Interactive & responsive variables
       const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
       let scrollY = 0;
-      let baseBallX = -2.2;
-      let baseBallY = 0.5;
-      let baseBallScale = 1.0;
 
       const handleMouseMove = (e) => {
         mouse.targetX = (e.clientX / window.innerWidth) * 2 - 1;
@@ -257,18 +174,6 @@ export default function BackgroundCanvas() {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
-
-        // Make position and scale responsive
-        if (width < 968) {
-          baseBallX = 0;
-          baseBallY = 2.4;
-          baseBallScale = 0.7;
-        } else {
-          baseBallX = -2.2;
-          baseBallY = 0.5;
-          baseBallScale = 1.0;
-        }
-        ballGroup.scale.setScalar(baseBallScale);
       };
 
       window.addEventListener('mousemove', handleMouseMove);
@@ -294,23 +199,8 @@ export default function BackgroundCanvas() {
         mouse.y += (mouse.targetY - mouse.y) * 0.08;
         particleMat.uniforms.uMouse.value.set(mouse.x, mouse.y);
 
-        // Smooth float animation on Dragon Ball Group
-        const floatOffset = Math.sin(elapsedTime * 1.5) * 0.12;
-        
         // Scroll parallax calculations
         const scrollOffset = scrollY * 0.003;
-        
-        // Update Dragon Ball position
-        const targetBallX = baseBallX + mouse.x * 0.35;
-        const targetBallY = baseBallY + floatOffset + mouse.y * 0.25 - scrollOffset;
-        
-        ballGroup.position.x += (targetBallX - ballGroup.position.x) * 0.08;
-        ballGroup.position.y += (targetBallY - ballGroup.position.y) * 0.08;
-
-        // Slow rotation on the Dragon Ball Group
-        ballGroup.rotation.y = elapsedTime * 0.15;
-        ballGroup.rotation.x = Math.sin(elapsedTime * 0.05) * 0.1 + mouse.y * 0.15;
-        ballGroup.rotation.z = mouse.x * -0.15;
 
         renderer.render(scene, camera);
       };
@@ -326,12 +216,6 @@ export default function BackgroundCanvas() {
         window.removeEventListener('resize', handleResize);
         
         // Dispose resources
-        glassGeo.dispose();
-        glassMat.dispose();
-        coreGeo.dispose();
-        coreMat.dispose();
-        starGeo.dispose();
-        starMat.dispose();
         pGeometry.dispose();
         particleMat.dispose();
         renderer.dispose();
@@ -389,14 +273,19 @@ export default function BackgroundCanvas() {
         }
 
         draw() {
+          const currentAlpha = Math.max(0.02, this.alpha * (0.7 + 0.3 * Math.sin(this.twinklePhase)));
+          
+          // Outer soft glow (very cheap compared to shadowBlur)
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius * 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(234, 88, 12, ${currentAlpha * 0.25})`;
+          ctx.fill();
+
+          // Inner solid core
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-          const currentAlpha = Math.max(0.02, this.alpha * (0.7 + 0.3 * Math.sin(this.twinklePhase)));
-          ctx.fillStyle = `rgba(245, 158, 11, ${currentAlpha})`;
-          ctx.shadowColor = 'rgba(234, 88, 12, 0.5)';
-          ctx.shadowBlur = this.radius * 3;
+          ctx.fillStyle = `rgba(255, 185, 80, ${currentAlpha})`;
           ctx.fill();
-          ctx.shadowBlur = 0;
         }
       }
 

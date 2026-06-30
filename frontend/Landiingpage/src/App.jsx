@@ -8,6 +8,8 @@ import SanctumGallery from './components/SanctumGallery'
 import AscensionCTA from './components/AscensionCTA'
 import SanctumFooter from './components/SanctumFooter'
 import LoginPage from './components/LoginPage'
+import SignupPage from './components/SignupPage'
+import ForgotPasswordPage from './components/ForgotPasswordPage'
 import './App.css'
 
 function LandingPage() {
@@ -65,6 +67,8 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
     </Routes>
   )
 }

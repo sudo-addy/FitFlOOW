@@ -1,0 +1,501 @@
+/* ============================================================
+   NUTRITION PORTAL PAGE STYLING
+   ============================================================ */
+
+.nutrition-content {
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header Row styling */
+.nutrition-header-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .nutrition-header-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.nutrition-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.nutrition-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a3958c);
+}
+
+.add-food-btn {
+  background: linear-gradient(135deg, #cc5500, #ff7700);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  padding: 0.8rem 1.6rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 85, 0, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.add-food-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 85, 0, 0.3);
+}
+
+/* ---------- Page Layout Grid ---------- */
+.nutrition-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .nutrition-layout-grid {
+    grid-template-columns: 1.2fr 1.8fr;
+  }
+}
+
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1.1rem;
+  text-transform: uppercase;
+}
+
+.nutrition-card {
+  background: rgba(18, 9, 6, 0.45);
+  border: 1px solid rgba(255, 85, 0, 0.06);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+}
+
+/* ---------- Calorie Circle Ring ---------- */
+.calorie-ring-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (min-width: 480px) {
+  .calorie-ring-box {
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+  }
+}
+
+.calorie-ring-svg-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.cal-gauge-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.cal-gauge-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.03);
+  stroke-width: 7px;
+}
+
+.cal-gauge-fill {
+  fill: none;
+  stroke: #ff5500;
+  stroke-width: 7px;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.4));
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.cal-gauge-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cal-gauge-val {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.cal-gauge-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.15rem;
+}
+
+.calorie-remaining-info {
+  flex: 1;
+}
+
+.calorie-remaining-info span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+}
+
+.calorie-remaining-info h4 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffaa00;
+  margin-top: 0.2rem;
+  margin-bottom: 0.45rem;
+}
+
+.calorie-remaining-info p {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.45;
+}
+
+/* ---------- Macronutrients Bars ---------- */
+.macros-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.macro-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.macro-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.macro-name {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.macro-name.protein { color: #ff5500; }
+.macro-name.carbs { color: #ffaa00; }
+.macro-name.fat { color: #3b82f6; }
+
+.macro-val {
+  color: #ffffff;
+}
+
+.macro-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.macro-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.macro-bar-fill.protein { background: #ff5500; box-shadow: 0 0 10px rgba(255, 85, 0, 0.4); }
+.macro-bar-fill.carbs { background: #ffaa00; box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
+.macro-bar-fill.fat { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+
+/* ---------- Hydration Tracker ---------- */
+.hydration-layout {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.water-flask-visualization {
+  width: 70px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.water-flask-glass {
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.015);
+  box-shadow: inset 0 -10px 20px rgba(255, 255, 255, 0.02);
+}
+
+.water-flask-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 3px;
+  height: 90%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+}
+
+.water-liquid-level {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+  transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -4px 15px rgba(29, 78, 216, 0.4);
+}
+
+.water-flask-readout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  z-index: 5;
+}
+
+.water-flask-readout span {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.tiny-lbl {
+  font-size: 0.58rem !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.hydration-controls {
+  flex: 1;
+}
+
+.water-action-buttons {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.water-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 0.55rem 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.water-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
+}
+
+/* ---------- Today's Food Logs ---------- */
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.meal-card-item {
+  background: rgba(18, 9, 6, 0.45);
+  border: 1px solid rgba(255, 85, 0, 0.06);
+  border-radius: 14px;
+  padding: 1.15rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.meal-card-item:hover {
+  border-color: rgba(255, 85, 0, 0.15);
+  background: rgba(18, 9, 6, 0.55);
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.65rem;
+}
+
+.meal-header h4 {
+  font-size: 0.95rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.meal-time {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 500;
+}
+
+.meal-remove-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.meal-remove-btn:hover {
+  color: #ff4444;
+}
+
+.meal-stats-row {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.meal-cals {
+  color: #ffaa00;
+}
+
+.meal-macro {
+  font-size: 0.75rem;
+}
+
+.meals-empty-state {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: rgba(18, 9, 6, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+}
+
+.meals-empty-state p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Food Creator Modal ---------- */
+.food-modal {
+  max-width: 440px;
+}
+
+.food-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-input-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.form-input-group input,
+.form-input-group select {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.65rem;
+  font-size: 0.88rem;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.25s ease;
+}
+
+.form-input-group select option {
+  background-color: #120906;
+  color: #ffffff;
+}
+
+.form-input-group input:focus {
+  border-color: rgba(255, 119, 0, 0.25);
+  outline: none;
+}
+
+.form-row-macros {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.dim-text {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.45;
+}
+
+/* ---------- Responsive Padding Adjustments ---------- */
+@media (max-width: 991px) {
+  .nutrition-content {
+    padding: 1rem;
+    padding-bottom: 64px; /* bottom-nav space */
+  }
+}

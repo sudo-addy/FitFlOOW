@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import Hero from './components/Hero'
@@ -7,15 +7,22 @@ import AscensionChambers from './components/AscensionChambers'
 import SanctumGallery from './components/SanctumGallery'
 import AscensionCTA from './components/AscensionCTA'
 import SanctumFooter from './components/SanctumFooter'
-import LoginPage from './components/LoginPage'
-import SignupPage from './components/SignupPage'
-import ForgotPasswordPage from './components/ForgotPasswordPage'
-import Dashboard from './pages/Dashboard'
-import WorkoutsPage from './pages/WorkoutsPage'
-import WorkoutLogPage from './pages/WorkoutLogPage'
-import ClassesPage from './pages/ClassesPage'
-import ProgressPage from './pages/ProgressPage'
 import './App.css'
+
+// Lazy loaded page components
+const LoginPage = lazy(() => import('./components/LoginPage'))
+const SignupPage = lazy(() => import('./components/SignupPage'))
+const ForgotPasswordPage = lazy(() => import('./components/ForgotPasswordPage'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const WorkoutsPage = lazy(() => import('./pages/WorkoutsPage'))
+const WorkoutLogPage = lazy(() => import('./pages/WorkoutLogPage'))
+const ClassesPage = lazy(() => import('./pages/ClassesPage'))
+const ProgressPage = lazy(() => import('./pages/ProgressPage'))
+const NutritionPage = lazy(() => import('./pages/NutritionPage'))
+const AchievementsPage = lazy(() => import('./pages/AchievementsPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const MembershipPage = lazy(() => import('./pages/MembershipPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function LandingPage() {
   return (
@@ -69,20 +76,29 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/workouts" element={<WorkoutsPage />} />
-      <Route path="/workouts/log" element={<WorkoutLogPage />} />
-      <Route path="/classes" element={<ClassesPage />} />
-      <Route path="/progress" element={<ProgressPage />} />
-    </Routes>
+    <Suspense fallback={
+      <div className="portal-loading">
+        <div className="spinner-hud" />
+      </div>
+    }>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/workouts" element={<WorkoutsPage />} />
+        <Route path="/workouts/log" element={<WorkoutLogPage />} />
+        <Route path="/classes" element={<ClassesPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
+        <Route path="/nutrition" element={<NutritionPage />} />
+        <Route path="/achievements" element={<AchievementsPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/membership" element={<MembershipPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   )
 }
 
 export default App
-
-

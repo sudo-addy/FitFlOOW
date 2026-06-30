@@ -1,0 +1,358 @@
+/* ============================================================
+   MEMBER PROFILE PAGE STYLING
+   ============================================================ */
+
+.profile-content {
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header Row styling */
+.profile-header-row {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 1.5rem;
+}
+
+.profile-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.profile-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a3958c);
+}
+
+/* ---------- Form Layout Grid ---------- */
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 992px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.profile-card {
+  background: rgba(18, 9, 6, 0.45);
+  border: 1px solid rgba(255, 85, 0, 0.06);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  margin-bottom: 1.5rem;
+}
+
+.card-heading {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+}
+
+/* ---------- Left Column: User avatar details ---------- */
+.profile-user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-avatar-large {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, #ff8800, #dd3300);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 10px 30px rgba(255, 85, 0, 0.2);
+}
+
+.avatar-glowing-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 119, 0, 0.3);
+  animation: avatarRotate 20s linear infinite;
+}
+
+@keyframes avatarRotate {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-user-card h3 {
+  font-size: 1.25rem;
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.profile-email-lbl {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 2rem;
+}
+
+.membership-status-box {
+  width: 100%;
+  background: rgba(255, 119, 0, 0.02);
+  border: 1px solid rgba(255, 119, 0, 0.06);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box-lbl {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.box-plan {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffaa00;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.2);
+}
+
+.membership-status-box p {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 1rem;
+}
+
+.manage-billing-btn {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #ffffff;
+  padding: 0.5rem 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.manage-billing-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 119, 0, 0.25);
+  color: #ffaa00;
+}
+
+/* ---------- Right Column: Settings fields ---------- */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 600px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-row.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.input-group label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.input-group input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.12);
+  border-radius: 8px;
+  padding: 0.72rem 1rem;
+  font-size: 0.88rem;
+  color: #ffffff;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.25s ease;
+}
+
+.input-group input:focus {
+  border-color: rgba(255, 119, 0, 0.25);
+  box-shadow: 0 0 15px rgba(255, 119, 0, 0.02);
+  outline: none;
+}
+
+/* Toggles config */
+.toggles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.toggle-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.toggle-row-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.toggle-info h4 {
+  font-size: 0.88rem;
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.toggle-info p {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+}
+
+/* Toggle Switch button */
+.toggle-switch-btn {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.toggle-switch-btn.on {
+  background: #ff5500;
+  box-shadow: 0 0 10px rgba(255, 85, 0, 0.35);
+}
+
+.switch-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-switch-btn.on .switch-slider {
+  transform: translateX(20px);
+}
+
+/* Save profile button */
+.profile-actions-bar {
+  margin-top: 1.5rem;
+}
+
+.save-profile-btn {
+  background: linear-gradient(135deg, #cc5500, #ff7700);
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  padding: 0.8rem 2rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 85, 0, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.save-profile-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 85, 0, 0.3);
+}
+
+/* ---------- TOAST NOTIFICATION ---------- */
+.toast-hud-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: rgba(18, 9, 6, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 170, 0, 0.25);
+  border-radius: 12px;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 150;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: toastReveal 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes toastReveal {
+  0%   { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.toast-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffaa00;
+  box-shadow: 0 0 8px #ffaa00;
+}
+
+.toast-hud-notification span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Responsive Padding Adjustments ---------- */
+@media (max-width: 991px) {
+  .profile-content {
+    padding: 1rem;
+    padding-bottom: 64px; /* bottom-nav space */
+  }
+}

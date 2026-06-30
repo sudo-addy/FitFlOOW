@@ -1,0 +1,143 @@
+/* ============================================================
+   404 NOT FOUND PAGE STYLING
+   ============================================================ */
+
+.notfound-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #070302;
+  overflow: hidden;
+  padding: 2rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Background grid styling */
+.notfound-bg-grid {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.notfound-bg-grid .grid-line {
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, #ff5500, transparent);
+}
+
+/* 404 Panel Card */
+.notfound-card {
+  position: relative;
+  background: rgba(18, 9, 6, 0.7);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.notfound-warning-icon {
+  font-size: 2.5rem;
+  color: #ff3300;
+  margin-bottom: 1rem;
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+@keyframes pulseWarning {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); text-shadow: 0 0 15px rgba(255, 50, 0, 0.6); }
+}
+
+.notfound-code {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #ff5500;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.notfound-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.notfound-desc {
+  font-size: 0.85rem;
+  color: #a3958c;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* Biometric coordinate detail indicators */
+.notfound-hud-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1rem 0;
+}
+
+.metric-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.metric-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.metric-value.value-red {
+  color: #ff3330;
+  text-shadow: 0 0 10px rgba(255, 50, 0, 0.3);
+}
+
+/* Action button */
+.notfound-home-btn {
+  background: linear-gradient(135deg, #cc5500, #ff7700);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0.85rem 1.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 85, 0, 0.2);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.notfound-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 85, 0, 0.35);
+}

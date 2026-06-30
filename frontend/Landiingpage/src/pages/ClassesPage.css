@@ -1,0 +1,448 @@
+/* ============================================================
+   CLASSES SESSION RESERVATION PAGE STYLING (Premium Portal Layout)
+   ============================================================ */
+
+.classes-content {
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Header Row styling */
+.classes-header-row {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 1.5rem;
+}
+
+.classes-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.classes-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a3958c);
+}
+
+/* ---------- Week Selector Bar ---------- */
+.week-selector-bar {
+  display: flex;
+  gap: 0.65rem;
+  background: rgba(18, 9, 6, 0.35);
+  border: 1px solid rgba(255, 85, 0, 0.05);
+  border-radius: 14px;
+  padding: 0.65rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+
+.week-selector-bar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Webkit */
+}
+
+.week-day-btn {
+  flex: 1;
+  min-width: 60px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0.65rem 0.25rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.25s ease;
+}
+
+.week-day-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.week-day-date {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.week-day-btn:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.week-day-btn.active {
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.12) 0%, rgba(255, 170, 0, 0.03) 100%);
+  border-color: rgba(255, 119, 0, 0.2);
+  box-shadow: inset 0 0 10px rgba(255, 119, 0, 0.02);
+}
+
+.week-day-btn.active .week-day-lbl {
+  color: #ffaa00;
+}
+
+/* ---------- Category Pills Filter ---------- */
+.category-filter-row {
+  display: flex;
+  gap: 0.55rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.category-pill {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.category-pill.active {
+  background: #ff5500;
+  border-color: #ff5500;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(255, 85, 0, 0.25);
+}
+
+/* ---------- Schedule Cards Grid ---------- */
+.schedule-list-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .schedule-list-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .schedule-list-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.schedule-card {
+  background: rgba(18, 9, 6, 0.45);
+  border: 1px solid rgba(255, 85, 0, 0.06);
+  border-radius: 16px;
+  padding: 1.35rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.schedule-card:hover {
+  border-color: rgba(255, 85, 0, 0.15);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+  background: rgba(18, 9, 6, 0.55);
+}
+
+.schedule-card.booked {
+  border-color: rgba(34, 197, 94, 0.2);
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.05);
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.category-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.category-badge.strength {
+  background: rgba(234, 179, 8, 0.06);
+  border-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.category-badge.hiit {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.category-badge.conditioning {
+  background: rgba(249, 115, 22, 0.06);
+  border-color: rgba(249, 115, 22, 0.15);
+  color: #ff5500;
+}
+
+.category-badge.recovery {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.class-duration-time {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.class-name-title {
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.class-instructor {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 1.25rem;
+}
+
+.instructor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ffaa00;
+}
+
+/* Spots status bar */
+.class-spots-status {
+  margin-top: auto;
+  margin-bottom: 1.25rem;
+}
+
+.spots-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+}
+
+.spots-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5500, #ffaa00);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.schedule-card.booked .spots-progress-fill {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.spots-text-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+}
+
+.spots-alert {
+  color: #ffaa00;
+}
+
+.spots-alert.red {
+  color: #ef4444;
+}
+
+/* Card buttons */
+.class-card-actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.details-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.65rem 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.details-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.book-btn {
+  flex: 1.8;
+  background: linear-gradient(135deg, #cc5500, #ff7700);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0.65rem 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(255, 85, 0, 0.1);
+}
+
+.book-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(255, 85, 0, 0.2);
+}
+
+.book-btn.active {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+  box-shadow: none;
+}
+
+.book-btn.active:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.book-btn.waitlist {
+  background: linear-gradient(135deg, #444, #555);
+  color: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+}
+
+.book-btn.waitlist.active {
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  color: #f97316;
+}
+
+/* Empty State */
+.schedule-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 5rem 2rem;
+  background: rgba(18, 9, 6, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  color: rgba(255, 255, 255, 0.15);
+  margin-bottom: 1rem;
+}
+
+.schedule-empty-state p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Details Drawer / Modal ---------- */
+.class-details-modal {
+  max-width: 460px;
+  text-align: left;
+}
+
+.details-drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.drawer-detail-section h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 0.25rem;
+}
+
+.drawer-detail-section p {
+  font-size: 0.88rem;
+  color: #ffffff;
+  line-height: 1.45;
+}
+
+.coach-highlight {
+  font-weight: 700;
+  color: #ffaa00;
+  margin-bottom: 0.15rem;
+}
+
+.dim-text {
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.tag-row {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.diff-tag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Responsive Padding Adjustments ---------- */
+@media (max-width: 991px) {
+  .classes-content {
+    padding: 1rem;
+    padding-bottom: 64px; /* bottom-nav space */
+  }
+}

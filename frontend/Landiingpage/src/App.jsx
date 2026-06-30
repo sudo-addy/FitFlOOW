@@ -10,6 +10,11 @@ import SanctumFooter from './components/SanctumFooter'
 import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage'
 import ForgotPasswordPage from './components/ForgotPasswordPage'
+import Dashboard from './pages/Dashboard'
+import WorkoutsPage from './pages/WorkoutsPage'
+import WorkoutLogPage from './pages/WorkoutLogPage'
+import ClassesPage from './pages/ClassesPage'
+import ProgressPage from './pages/ProgressPage'
 import './App.css'
 
 function LandingPage() {
@@ -69,6 +74,11 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/workouts" element={<WorkoutsPage />} />
+      <Route path="/workouts/log" element={<WorkoutLogPage />} />
+      <Route path="/classes" element={<ClassesPage />} />
+      <Route path="/progress" element={<ProgressPage />} />
     </Routes>
   )
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../utils/api';
 import './LoginPage.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -176,6 +177,11 @@ export default function LoginPage() {
 
               {/* Form */}
               <form className="login-form" onSubmit={handleSubmit}>
+                {searchParams.get('expired') === 'true' && (
+                  <div className="login-error-banner" style={{ color: '#ffaa00', backgroundColor: 'rgba(255,170,0,0.1)', padding: '0.75rem', borderRadius: '4px', fontSize: '0.85rem', marginBottom: '1.25rem', border: '1px solid rgba(255,170,0,0.3)', textAlign: 'center', fontWeight: '500' }}>
+                    ⚠️ Session expired. Please log in again.
+                  </div>
+                )}
               {/* Email */}
               <div className="login-field-group">
                 <label className="login-field-label" htmlFor="login-email">Email</label>

@@ -20,7 +20,7 @@ const request = async (url, options = {}) => {
     localStorage.removeItem('user');
     // Only redirect if we're not already on the login/signup page
     if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
-      window.location.href = '/login';
+      window.location.href = '/login?expired=true';
     }
     throw new Error('Session expired. Please log in again.');
   }

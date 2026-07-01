@@ -1,0 +1,5 @@
+# Exclude frontend code from language statistics so that Rust is represented as the primary language
+frontend/** linguist-documentation
+
+# Exclude JSON data files
+*.json linguist-generated

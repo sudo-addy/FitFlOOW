@@ -334,9 +334,9 @@ export default function LoginPage() {
                 <div className="login-signup-row">
                   <span className="login-signup-text">
                     New here?{' '}
-                    <button type="button" className="login-signup-link">
+                    <Link to="/signup" className="login-signup-link">
                       Begin Your Ascension →
-                    </button>
+                    </Link>
                   </span>
                 </div>
               </form>

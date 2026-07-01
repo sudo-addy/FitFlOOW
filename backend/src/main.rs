@@ -47,13 +47,16 @@ async fn main() {
         }
     };
 
+    let auth_routes = Router::new()
+        .route("/signup", post(routes::sign_up))
+        .route("/login", post(routes::sign_in))
+        .route("/forgot-password", post(routes::forgot_password))
+        .route("/reset-password", post(routes::reset_password))
+        .layer(axum::middleware::from_fn(middleware::rate_limit));
+
     // Router mapping
     let app = Router::new()
-        // Auth
-        .route("/api/auth/signup", post(routes::sign_up))
-        .route("/api/auth/login", post(routes::sign_in))
-        .route("/api/auth/forgot-password", post(routes::forgot_password))
-        .route("/api/auth/reset-password", post(routes::reset_password))
+        .nest("/api/auth", auth_routes)
         // Dashboard
         .route("/api/dashboard/stats", get(routes::get_dashboard_stats))
         // Workouts

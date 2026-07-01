@@ -65,12 +65,31 @@ export default function Hero() {
 
   return (
     <section id="home" className="hero-section" style={{ height: '100dvh' }}>
-      {/* 1. Base Background Image with parallax ref */}
+      {/* 1. Base Background Image with progressive loader and parallax ref */}
       <div 
         ref={bgRef}
         className="hero-base-bg hero-zoom" 
-        style={{ backgroundImage: `url('/hero-goku-hd.webp?v=4')` }}
-      />
+        style={{ 
+          backgroundImage: `url('/hero-goku.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <img 
+          src="/hero-goku-hd.webp?v=4"
+          alt="Goku fitness inspiration pose representing limit break"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+          }}
+        />
+      </div>
 
       {/* 2. Floating Amber Particles (z-index: 40) */}
       <Suspense fallback={null}>

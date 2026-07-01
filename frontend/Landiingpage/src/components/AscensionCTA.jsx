@@ -37,7 +37,7 @@ export default function AscensionCTA() {
       id="cta"
     >
       {/* Background Graphic Grid & Subtle Goku Backdrop overlay */}
-      <div className="cta-bg-overlay" style={{ backgroundImage: `url('/hero-goku-hd.webp?v=4')` }} />
+      <div className="cta-bg-overlay" style={{ backgroundImage: `url('/hero-goku-hd.webp')` }} />
       <div className="cta-bg-grid">
         <div className="grid-line" />
         <div className="grid-line" />

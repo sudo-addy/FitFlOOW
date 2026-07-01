@@ -51,8 +51,8 @@
 }
 
 @keyframes bgBreath {
-  0%   { transform: scale(1.02); }
-  100% { transform: scale(1.06); }
+  0%   { transform: scale(1.02); filter: brightness(0.55) saturate(1.15); }
+  100% { transform: scale(1.06); filter: brightness(0.50) saturate(1.25); }
 }
 
 .login-bg-gradient {
@@ -1093,4 +1093,53 @@
     transform: none;
     filter: none;
   }
+}
+
+/* ---- Form Validation Errors ---- */
+.login-field-error {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #ff6b6b;
+  animation: login-error-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes login-error-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.login-input-wrapper--error .login-input {
+  border-color: rgba(255, 80, 80, 0.6) !important;
+  box-shadow: 0 0 0 2px rgba(255, 80, 80, 0.15) !important;
+}
+
+/* ---- Loading Spinner ---- */
+.login-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: login-spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Submit button loading state */
+.login-submit-btn--loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+  gap: 0.75rem;
+}
+
+.login-submit-btn:disabled {
+  pointer-events: none;
 }

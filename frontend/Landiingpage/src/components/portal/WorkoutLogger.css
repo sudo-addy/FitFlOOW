@@ -1,0 +1,615 @@
+/* ============================================================
+   WORKOUT LOGGER — Saiyan Gym Log Session
+   Prefix: .logger-
+   ============================================================ */
+
+.logger-root {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+}
+
+/* ── Header ── */
+.logger-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 0;
+}
+
+/* ── Timer ── */
+.logger-timer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 12px;
+  min-width: 220px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.logger-timer--running {
+  border-color: rgba(255, 85, 0, 0.4);
+  background: rgba(255, 85, 0, 0.06);
+  animation: logger-timer-glow 2s ease infinite;
+}
+
+@keyframes logger-timer-glow {
+  0%, 100% { box-shadow: 0 0 16px rgba(255,85,0,0.1); }
+  50% { box-shadow: 0 0 24px rgba(255,85,0,0.25); }
+}
+
+.logger-timer-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 85, 0, 0.12);
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--portal-accent);
+  flex-shrink: 0;
+}
+.logger-timer--running .logger-timer-icon {
+  background: rgba(255, 85, 0, 0.2);
+  animation: logger-icon-pulse 1.5s ease infinite;
+}
+@keyframes logger-icon-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+.logger-timer-icon svg { width: 18px; height: 18px; }
+
+.logger-timer-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.logger-timer-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--portal-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.logger-timer--running .logger-timer-value { color: var(--portal-accent); }
+
+.logger-timer-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.logger-start-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ff5500, #ff8800);
+  border: none;
+  border-radius: 7px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(255,85,0,0.3);
+}
+.logger-start-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,85,0,0.45); }
+
+/* ── Top Controls ── */
+.logger-top-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.logger-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.logger-field-group--grow { flex: 1; min-width: 180px; }
+.logger-field-group--btn { justify-content: flex-end; }
+
+.logger-top-controls > .logger-field-group:first-child { flex: 1; min-width: 200px; }
+.logger-top-controls > .logger-field-group:last-child { min-width: 180px; }
+
+.logger-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.logger-input {
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 8px;
+  color: var(--portal-text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+.logger-input::placeholder { color: var(--portal-text-muted); }
+.logger-input:focus { border-color: rgba(255,85,0,0.45); background: rgba(255,85,0,0.05); }
+
+.logger-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logger-select {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 8px;
+  color: var(--portal-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.logger-select:focus { border-color: rgba(255,85,0,0.45); }
+.logger-select option { background: #1a0e0a; }
+
+.logger-select-chevron {
+  position: absolute;
+  right: 0.75rem;
+  width: 16px;
+  height: 16px;
+  color: var(--portal-text-muted);
+  pointer-events: none;
+}
+
+/* ── Stats Bar ── */
+.logger-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255,85,0,0.06);
+  border: 1px solid rgba(255,85,0,0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  overflow: hidden;
+}
+
+.logger-stats-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.logger-stats-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--portal-accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.logger-stats-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.logger-stats-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,85,0,0.15);
+  flex-shrink: 0;
+}
+
+/* ── Exercise List ── */
+.logger-exercises-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.logger-exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.logger-exercise-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,85,0,0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+}
+.logger-exercise-card:hover { border-color: rgba(255,85,0,0.25); }
+
+.logger-ex-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.logger-ex-muscle-tag {
+  padding: 0.2rem 0.65rem;
+  background: rgba(255,85,0,0.12);
+  border: 1px solid rgba(255,85,0,0.2);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--portal-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.logger-ex-name {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  margin: 0;
+}
+
+.logger-ex-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,60,60,0.2);
+  background: rgba(255,60,60,0.06);
+  color: rgba(255,100,100,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.logger-ex-remove:hover { background: rgba(255,60,60,0.15); color: #ff6060; border-color: rgba(255,60,60,0.4); }
+.logger-ex-remove svg { width: 14px; height: 14px; }
+
+/* Sets Table */
+.logger-sets-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.logger-sets-head {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr 50px 30px;
+  gap: 0.75rem;
+  padding: 0 0.25rem 0.5rem;
+  border-bottom: 1px solid rgba(255,85,0,0.08);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+  align-items: center;
+}
+
+.logger-set-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr 50px 30px;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.4rem 0.25rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.logger-set-row--done {
+  background: rgba(74,222,128,0.05);
+}
+
+.logger-set-num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--portal-text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.logger-set-input {
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 7px;
+  color: var(--portal-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+}
+.logger-set-input:focus { border-color: rgba(255,85,0,0.45); background: rgba(255,85,0,0.06); }
+.logger-set-row--done .logger-set-input { border-color: rgba(74,222,128,0.2); color: #4ade80; }
+
+/* Checkbox */
+.logger-set-check-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.logger-set-check {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.logger-set-check-custom {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.logger-set-check:checked + .logger-set-check-custom {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-color: #22c55e;
+  box-shadow: 0 0 10px rgba(34,197,94,0.35);
+}
+.logger-set-check-custom svg { width: 14px; height: 14px; color: #fff; }
+
+.logger-set-check-wrap:hover .logger-set-check-custom {
+  border-color: rgba(255,85,0,0.4);
+}
+
+/* Del set btn */
+.logger-set-del {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.2);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.logger-set-del:hover { color: #ff6060; background: rgba(255,60,60,0.1); }
+.logger-set-del svg { width: 13px; height: 13px; }
+
+/* Add set */
+.logger-add-set-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px dashed rgba(255,85,0,0.25);
+  border-radius: 7px;
+  color: var(--portal-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+.logger-add-set-btn:hover {
+  border-color: rgba(255,85,0,0.5);
+  color: var(--portal-accent);
+  background: rgba(255,85,0,0.05);
+}
+.logger-add-set-btn svg { width: 14px; height: 14px; }
+
+/* ── Add Exercise Card ── */
+.logger-add-ex-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,85,0,0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.logger-add-ex-form {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.logger-add-ex-btn {
+  white-space: nowrap;
+}
+
+/* ── Notes ── */
+.logger-notes-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.logger-notes-input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,85,0,0.12);
+  border-radius: 10px;
+  color: var(--portal-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  box-sizing: border-box;
+}
+.logger-notes-input::placeholder { color: var(--portal-text-muted); }
+.logger-notes-input:focus { border-color: rgba(255,85,0,0.4); background: rgba(255,85,0,0.04); }
+
+/* ── Finish Button ── */
+.logger-finish-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 2rem;
+}
+
+.logger-finish-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 400px;
+  padding: 1.1rem 2rem;
+  background: linear-gradient(135deg, #ff4400, #ff7700, #ffaa00);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 8px 32px rgba(255,85,0,0.35);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, background-position 0.4s ease;
+}
+.logger-finish-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 40px rgba(255,85,0,0.55);
+  background-position: 100% 50%;
+}
+.logger-finish-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.logger-finish-btn svg { width: 20px; height: 20px; }
+
+.logger-finish-hint {
+  font-size: 0.8rem;
+  color: var(--portal-text-muted);
+  text-align: center;
+}
+
+/* ── Completion Screen ── */
+.logger-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.logger-complete-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,163,74,0.1));
+  border: 2px solid rgba(34,197,94,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4ade80;
+  box-shadow: 0 0 40px rgba(34,197,94,0.2);
+  animation: logger-pop-in 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes logger-pop-in {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.logger-complete-icon svg { width: 36px; height: 36px; }
+
+.logger-complete-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--portal-text);
+  margin: 0;
+}
+
+.logger-complete-sub {
+  font-size: 0.95rem;
+  color: var(--portal-text-dim);
+  margin: 0;
+  font-style: italic;
+}
+
+.logger-complete-stats {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,85,0,0.1);
+  border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.logger-complete-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.logger-complete-stat-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--portal-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.logger-complete-stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.logger-new-btn {
+  margin-top: 0.5rem;
+}

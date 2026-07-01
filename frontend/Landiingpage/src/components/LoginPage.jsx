@@ -1,17 +1,57 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../utils/api';
 import './LoginPage.css';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const validate = () => {
+    const newErrors = {};
+    if (!email.trim()) {
+      newErrors.email = 'Email is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Enter a valid email address.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    } else if (password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters.';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to backend authentication
-    console.log('Login attempt:', { email, rememberMe });
+    const newErrors = validate();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
+    setIsLoading(true);
+    try {
+      await api.login(email, password);
+      setIsLoading(false);
+      setSubmitSuccess(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } catch (error) {
+      setIsLoading(false);
+      setErrors({ form: error.message || 'Authentication failed.' });
+    }
+  };
+
+  const clearError = (field) => {
+    if (errors[field]) setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
   };
 
   return (
@@ -136,69 +176,85 @@ export default function LoginPage() {
 
               {/* Form */}
               <form className="login-form" onSubmit={handleSubmit}>
-                {/* Email */}
-                <div className="login-field-group">
-                  <label className="login-field-label" htmlFor="login-email">Email</label>
-                  <div className="login-input-wrapper">
-                    <svg className="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                    <input
-                      id="login-email"
-                      className="login-input"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      autoComplete="email"
-                      required
-                    />
-                  </div>
+              {/* Email */}
+              <div className="login-field-group">
+                <label className="login-field-label" htmlFor="login-email">Email</label>
+                <div className={`login-input-wrapper ${errors.email ? 'login-input-wrapper--error' : ''}`}>
+                  <svg className="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <input
+                    id="login-email"
+                    className="login-input"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); clearError('email'); }}
+                    autoComplete="email"
+                    required
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'login-email-error' : undefined}
+                  />
                 </div>
+                {errors.email && (
+                  <span className="login-field-error" id="login-email-error" role="alert">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {errors.email}
+                  </span>
+                )}
+              </div>
 
-                {/* Password */}
-                <div className="login-field-group">
-                  <label className="login-field-label" htmlFor="login-password">Password</label>
-                  <div className="login-input-wrapper">
-                    <svg className="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    <input
-                      id="login-password"
-                      className="login-input"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      autoComplete="current-password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="login-password-toggle"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                          <line x1="1" y1="1" x2="23" y2="23" />
-                          <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
-                        </svg>
-                      ) : (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
+              {/* Password */}
+              <div className="login-field-group">
+                <label className="login-field-label" htmlFor="login-password">Password</label>
+                <div className={`login-input-wrapper ${errors.password ? 'login-input-wrapper--error' : ''}`}>
+                  <svg className="login-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <input
+                    id="login-password"
+                    className="login-input"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => { setPassword(e.target.value); clearError('password'); }}
+                    autoComplete="current-password"
+                    required
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'login-password-error' : undefined}
+                  />
+                  <button
+                    type="button"
+                    className="login-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                        <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
                 </div>
+                {errors.password && (
+                  <span className="login-field-error" id="login-password-error" role="alert">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {errors.password}
+                  </span>
+                )}
+              </div>
 
-                 {/* Options */}
+                {/* Options */}
                 <div className="login-options-row">
                   <label className="login-remember">
                     <input
@@ -209,16 +265,43 @@ export default function LoginPage() {
                     />
                     <span className="login-remember-text">Remember Me</span>
                   </label>
-                  <Link to="/forgot-password" className="login-forgot-link">Forgot Password?</Link>
+                  <button type="button" className="login-forgot-link">Forgot Password?</button>
                 </div>
 
+                {errors.form && (
+                  <div className="login-field-error" style={{ marginBottom: '1rem', justifyContent: 'center' }} role="alert">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {errors.form}
+                  </div>
+                )}
+
                 {/* Submit */}
-                <button type="submit" className="login-submit-btn">
-                  ENTER THE SANCTUM
-                  <svg className="login-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
+                <button
+                  type="submit"
+                  className={`login-submit-btn ${isLoading ? 'login-submit-btn--loading' : ''}`}
+                  disabled={isLoading}
+                  id="login-submit-btn"
+                  aria-label={isLoading ? 'Signing in…' : 'Sign in to your account'}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="login-spinner" aria-hidden="true" />
+                      ENTERING…
+                    </>
+                  ) : submitSuccess ? (
+                    <>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="login-submit-arrow" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      ACCESS GRANTED
+                    </>
+                  ) : (
+                    <>
+                      ENTER THE SANCTUM
+                      <svg className="login-submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </>
+                  )}
                 </button>
 
                 {/* Divider */}
@@ -251,9 +334,9 @@ export default function LoginPage() {
                 <div className="login-signup-row">
                   <span className="login-signup-text">
                     New here?{' '}
-                    <Link to="/signup" className="login-signup-link">
+                    <button type="button" className="login-signup-link">
                       Begin Your Ascension →
-                    </Link>
+                    </button>
                   </span>
                 </div>
               </form>

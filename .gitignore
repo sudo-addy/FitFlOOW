@@ -1,0 +1,22 @@
+# Root .gitignore for FitFlOOW
+
+# Rust Build Artifacts
+backend/target/
+backend/fitfloow.db
+backend/fitfloow.db-shm
+backend/fitfloow.db-wal
+backend/dev.db
+backend/dev.db-shm
+backend/dev.db-wal
+
+# Frontend Node Modules & Builds
+frontend/Landiingpage/node_modules/
+frontend/Landiingpage/dist/
+frontend/Landiingpage/.env.local
+frontend/Landiingpage/.env.development.local
+frontend/Landiingpage/.env.production.local
+frontend/Landiingpage/.env.test.local
+
+# OS Files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,423 @@
+/* ============================================================
+   PROFILE SETTINGS — Saiyan Gym Member Portal
+   CSS prefix: .profile-
+   ============================================================ */
+
+.profile-root {
+  max-width: 900px;
+}
+
+/* ---- Avatar Section ---- */
+.profile-avatar-section {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.profile-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar-ring {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #ff5500, #ffaa00);
+  box-shadow: 0 0 24px rgba(255, 85, 0, 0.3);
+}
+
+.profile-avatar-circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #1a0d06;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar-initials {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--portal-accent);
+  line-height: 1;
+}
+
+.profile-avatar-file-input {
+  display: none;
+}
+
+.profile-avatar-edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--portal-accent);
+  border: 2px solid var(--portal-main-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.profile-avatar-edit-btn:hover {
+  background: #ff7700;
+  transform: scale(1.12);
+}
+.profile-avatar-edit-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.profile-avatar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.profile-avatar-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  margin: 0;
+}
+
+.profile-avatar-since {
+  font-size: 0.78rem;
+  color: var(--portal-text-muted);
+  margin: 0.15rem 0 0;
+}
+
+/* ---- Section Layout ---- */
+.profile-section {
+  margin-bottom: 0.5rem;
+}
+
+.profile-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-section-icon {
+  display: flex;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--portal-accent);
+  flex-shrink: 0;
+}
+.profile-section-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.profile-section-title {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text);
+  margin: 0;
+}
+
+/* ---- Form Grid ---- */
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 600px) {
+  .profile-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.profile-form-grid--half {
+  max-width: 600px;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.profile-field--full {
+  grid-column: 1 / -1;
+}
+
+/* ---- Labels ---- */
+.profile-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+/* ---- Inputs ---- */
+.profile-input {
+  width: 100%;
+  padding: 0.7rem 0.95rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--portal-text);
+  font-size: 0.9rem;
+  font-family: 'Outfit', -apple-system, sans-serif;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.profile-input:focus {
+  border-color: var(--portal-accent);
+  background: rgba(255, 85, 0, 0.06);
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.12);
+}
+
+.profile-input::placeholder {
+  color: var(--portal-text-muted);
+}
+
+.profile-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Input date color fix */
+.profile-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+}
+
+/* ---- Unit input ---- */
+.profile-input-unit-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-input--unit {
+  padding-right: 3rem;
+}
+
+.profile-input-unit {
+  position: absolute;
+  right: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--portal-text-muted);
+  pointer-events: none;
+}
+
+/* ---- BMI Strip ---- */
+.profile-bmi-strip {
+  display: flex;
+  gap: 0;
+  background: rgba(255, 170, 0, 0.04);
+  border: 1px solid rgba(255, 170, 0, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-bmi-item {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.9rem 1.1rem;
+  border-right: 1px solid rgba(255, 170, 0, 0.1);
+}
+.profile-bmi-item:last-child {
+  border-right: none;
+}
+
+.profile-bmi-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.profile-bmi-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  line-height: 1.2;
+}
+
+/* ---- Toggle Switch ---- */
+.profile-prefs-group {
+  margin-bottom: 1.5rem;
+}
+
+.profile-prefs-group-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+  margin: 0 0 0.85rem;
+}
+
+.profile-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.profile-2fa-row {
+  margin-bottom: 1.5rem;
+}
+
+.profile-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+.profile-toggle-row:last-child {
+  border-bottom: none;
+}
+.profile-toggle-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.profile-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-toggle-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--portal-text);
+}
+
+.profile-toggle-desc {
+  font-size: 0.75rem;
+  color: var(--portal-text-muted);
+  line-height: 1.4;
+}
+
+/* The actual CSS toggle switch */
+.profile-toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  padding: 0;
+}
+
+.profile-toggle-switch--on {
+  background: var(--portal-accent);
+  border-color: var(--portal-accent);
+  box-shadow: 0 0 12px rgba(255, 85, 0, 0.3);
+}
+
+.profile-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.profile-toggle-switch--on .profile-toggle-knob {
+  transform: translateX(20px);
+}
+
+/* ---- Password Strength ---- */
+.profile-pw-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.profile-pw-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 9999px;
+  transition: background 0.3s ease;
+}
+
+.profile-pw-bar--weak { background: #ff6060; }
+.profile-pw-bar--good { background: #4ade80; }
+
+.profile-pw-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.profile-pw-label--weak { color: #ff6060; }
+.profile-pw-label--good { color: #4ade80; }
+
+.profile-pw-match {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin: 0;
+}
+.profile-pw-match--ok { color: #4ade80; }
+.profile-pw-match--err { color: #ff6060; }
+
+/* ---- Section Footer ---- */
+.profile-section-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Save button saved state */
+.profile-save-btn--saved {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
+}

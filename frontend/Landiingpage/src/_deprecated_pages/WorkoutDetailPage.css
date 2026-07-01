@@ -1,0 +1,207 @@
+.detail-content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detail-header-row {
+  margin-bottom: 1.5rem;
+}
+
+.back-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  transition: color 0.2s ease;
+}
+
+.back-link-btn:hover {
+  color: var(--accent-orange);
+}
+
+.back-arrow-svg {
+  width: 16px;
+  height: 16px;
+}
+
+.detail-hud-card {
+  position: relative;
+  background: rgba(18, 9, 6, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(255, 85, 0, 0.05);
+}
+
+.detail-bg-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 85, 0, 0.08) 0%, rgba(0,0,0,0) 70%);
+  pointer-events: none;
+}
+
+.detail-date {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--accent-orange);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.detail-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 15px rgba(255, 85, 0, 0.25);
+}
+
+.detail-stats-grid {
+  display: flex;
+  gap: 3rem;
+  position: relative;
+}
+
+.detail-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.scouter-hud-accent-bar {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: var(--accent-orange);
+  box-shadow: 0 0 8px var(--accent-orange);
+}
+
+.detail-exercises-section {
+  margin-top: 2.5rem;
+}
+
+.section-label {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--accent-orange);
+  padding-left: 0.75rem;
+}
+
+.detail-exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-ex-card {
+  background: rgba(18, 9, 6, 0.3);
+  border: 1px solid rgba(255, 85, 0, 0.08);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.detail-ex-card:hover {
+  border-color: rgba(255, 85, 0, 0.2);
+}
+
+.ex-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px dashed rgba(255, 85, 0, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+.ex-card-header h4 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.ex-sets-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.ex-sets-table-wrapper {
+  overflow-x: auto;
+}
+
+.ex-sets-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ex-sets-table th {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 85, 0, 0.1);
+}
+
+.ex-sets-table td {
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 85, 0, 0.04);
+}
+
+.ex-sets-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pr-val {
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .detail-content {
+    padding: 1rem;
+  }
+  .detail-hud-card {
+    padding: 1.5rem;
+  }
+  .detail-title {
+    font-size: 1.6rem;
+  }
+  .detail-stats-grid {
+    gap: 1.5rem;
+  }
+  .stat-value {
+    font-size: 1.2rem;
+  }
+}

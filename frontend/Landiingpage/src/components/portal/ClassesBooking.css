@@ -1,0 +1,581 @@
+/* ============================================================
+   CLASSES BOOKING — Saiyan Gym Member Portal
+   CSS prefix: .classes-
+   ============================================================ */
+
+.classes-page {
+  max-width: 1200px;
+}
+
+/* ---- Header Row ---- */
+.classes-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.classes-header-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.classes-stat-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 10px;
+  padding: 0.7rem 1.2rem;
+  min-width: 72px;
+}
+
+.classes-stat-pill--gold {
+  border-color: rgba(255, 170, 0, 0.2);
+  background: rgba(255, 170, 0, 0.04);
+}
+
+.classes-stat-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--portal-accent);
+  line-height: 1;
+}
+
+.classes-stat-pill--gold .classes-stat-num {
+  color: var(--portal-accent-gold);
+}
+
+.classes-stat-lbl {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--portal-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- Week Selector ---- */
+.classes-week-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.classes-week-selector::-webkit-scrollbar { display: none; }
+
+.classes-day-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--portal-text-dim);
+  font-family: inherit;
+  transition: all 0.2s ease;
+  min-width: 62px;
+  flex-shrink: 0;
+}
+
+.classes-day-tab:hover {
+  background: rgba(255, 85, 0, 0.07);
+  border-color: rgba(255, 85, 0, 0.2);
+  color: var(--portal-text);
+}
+
+.classes-day-tab--active {
+  background: rgba(255, 85, 0, 0.14);
+  border-color: rgba(255, 85, 0, 0.5);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(255, 85, 0, 0.2);
+}
+
+.classes-day-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.classes-day-date {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.classes-today-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--portal-accent);
+  box-shadow: 0 0 6px rgba(255, 85, 0, 0.8);
+  margin-top: 2px;
+}
+
+/* ---- Filter Row ---- */
+.classes-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.classes-filter-tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.classes-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 85, 0, 0.12);
+  border-radius: 8px;
+  color: var(--portal-text-dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.classes-filter-btn:hover {
+  border-color: rgba(255, 85, 0, 0.3);
+  color: var(--portal-text);
+}
+
+.classes-filter-btn--active {
+  background: rgba(255, 85, 0, 0.12);
+  border-color: rgba(255, 85, 0, 0.4);
+  color: var(--portal-accent);
+}
+
+.classes-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--portal-accent);
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.classes-showing-label {
+  font-size: 0.82rem;
+  color: var(--portal-text-muted);
+}
+
+.classes-showing-label strong {
+  color: var(--portal-text-dim);
+}
+
+/* ---- Empty State ---- */
+.classes-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  color: var(--portal-text-muted);
+  text-align: center;
+}
+
+.classes-empty-state svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.4;
+}
+
+/* ---- Class Cards Grid ---- */
+.classes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .classes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .classes-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---- Class Card ---- */
+.classes-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 12px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.classes-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 85, 0, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.classes-card:hover {
+  border-color: rgba(255, 85, 0, 0.25);
+  background: rgba(255, 85, 0, 0.03);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.classes-card:hover::before {
+  opacity: 1;
+}
+
+.classes-card--booked {
+  border-color: rgba(255, 85, 0, 0.45) !important;
+  background: rgba(255, 85, 0, 0.06) !important;
+  box-shadow: 0 0 0 1px rgba(255, 85, 0, 0.2), inset 0 0 40px rgba(255, 85, 0, 0.04);
+}
+
+.classes-card--booked::before {
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, rgba(255, 85, 0, 0.6), transparent);
+}
+
+.classes-card--full {
+  opacity: 0.6;
+}
+
+/* Card top row */
+.classes-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.classes-card-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 85, 0, 0.1);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--portal-accent);
+  flex-shrink: 0;
+}
+
+.classes-card-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.classes-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+/* Intensity badges */
+.classes-intensity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.classes-badge--warrior {
+  background: rgba(100, 200, 120, 0.12);
+  color: #5ce87e;
+  border: 1px solid rgba(100, 200, 120, 0.25);
+}
+
+.classes-badge--elite {
+  background: rgba(255, 170, 0, 0.12);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.25);
+}
+
+.classes-badge--champion {
+  background: rgba(255, 85, 0, 0.12);
+  color: #ff6622;
+  border: 1px solid rgba(255, 85, 0, 0.3);
+}
+
+.classes-booked-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  background: rgba(255, 85, 0, 0.18);
+  color: #ff7733;
+  border: 1px solid rgba(255, 85, 0, 0.35);
+}
+
+.classes-booked-badge svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* Card name & desc */
+.classes-card-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.classes-card-desc {
+  font-size: 0.8rem;
+  color: var(--portal-text-dim);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+/* Meta row */
+.classes-card-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+}
+
+.classes-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--portal-text-dim);
+}
+
+.classes-meta-item svg {
+  width: 13px;
+  height: 13px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* Spots bar */
+.classes-spots-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.classes-spots-text {
+  color: var(--portal-text-dim);
+}
+
+.classes-spots-count {
+  color: var(--portal-text-muted);
+  font-weight: 600;
+}
+
+.classes-spots-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.classes-spots-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.classes-spots-fill--ok {
+  background: linear-gradient(90deg, #32c864, #5ce87e);
+}
+
+.classes-spots-fill--warning {
+  background: linear-gradient(90deg, #ff8800, #ffaa00);
+}
+
+.classes-spots-fill--danger {
+  background: linear-gradient(90deg, #ff3333, #ff5500);
+}
+
+/* Book button */
+.classes-book-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: auto;
+}
+
+.classes-book-btn--book {
+  background: linear-gradient(135deg, #ff5500, #ff8800);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 85, 0, 0.2);
+}
+
+.classes-book-btn--book:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4);
+}
+
+.classes-book-btn--cancel {
+  background: rgba(255, 85, 0, 0.1);
+  color: var(--portal-accent);
+  border: 1px solid rgba(255, 85, 0, 0.3);
+}
+
+.classes-book-btn--cancel:hover {
+  background: rgba(255, 60, 60, 0.1);
+  border-color: rgba(255, 60, 60, 0.4);
+  color: #ff6060;
+}
+
+.classes-book-btn--full {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--portal-text-muted);
+  cursor: not-allowed;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Booked Sessions Section ---- */
+.classes-booked-section {
+  margin-top: 0.5rem;
+}
+
+.classes-booked-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.classes-booked-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 85, 0, 0.05);
+  border: 1px solid rgba(255, 85, 0, 0.18);
+  border-radius: 10px;
+  padding: 0.9rem 1.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.classes-booked-item:hover {
+  background: rgba(255, 85, 0, 0.08);
+  transform: translateX(3px);
+}
+
+.classes-booked-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #ff5500, #ff8800);
+  border-radius: 3px 0 0 3px;
+}
+
+.classes-booked-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.classes-booked-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.classes-booked-detail {
+  font-size: 0.78rem;
+  color: var(--portal-text-muted);
+}
+
+.classes-cancel-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--portal-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.classes-cancel-icon-btn:hover {
+  background: rgba(255, 60, 60, 0.1);
+  border-color: rgba(255, 60, 60, 0.3);
+  color: #ff6060;
+}
+
+.classes-cancel-icon-btn svg {
+  width: 14px;
+  height: 14px;
+}

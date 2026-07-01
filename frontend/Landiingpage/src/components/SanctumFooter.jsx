@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './SanctumFooter.css';
 
 export default function SanctumFooter() {
+  const footerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.05 }
+    );
+    const el = footerRef.current;
+    if (el) observer.observe(el);
+    return () => { if (el) observer.unobserve(el); };
+  }, []);
+
   return (
-    <footer className="sanctum-footer" id="footer">
+    <footer className={`sanctum-footer ${isVisible ? 'footer-animate-in' : ''}`} id="footer" ref={footerRef}>
       <div className="footer-container">
         
         {/* Top Section: Link Columns */}

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /workouts
+Disallow: /profile
+Disallow: /nutrition
+Disallow: /achievements
+Disallow: /membership
+Disallow: /classes
+Disallow: /progress
+
+# Update this to your actual domain
+Sitemap: https://yourdomain.com/sitemap.xml

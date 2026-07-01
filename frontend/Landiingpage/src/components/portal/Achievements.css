@@ -1,0 +1,479 @@
+/* ============================================================
+   ACHIEVEMENTS — Saiyan Gym Member Portal
+   CSS prefix: .achieve-
+   ============================================================ */
+
+/* ---- Root ---- */
+.achieve-root {
+  max-width: 1200px;
+}
+
+/* ---- Page Header ---- */
+.achieve-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.achieve-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.achieve-header-stats {
+  flex-shrink: 0;
+}
+
+.achieve-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 1.2rem;
+  background: rgba(255, 85, 0, 0.08);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  border-radius: 9999px;
+}
+
+.achieve-stat-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--portal-accent);
+  line-height: 1;
+}
+
+.achieve-stat-sep {
+  font-size: 1rem;
+  color: var(--portal-text-muted);
+  margin: 0 0.1rem;
+}
+
+.achieve-stat-total {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--portal-text-dim);
+  line-height: 1;
+}
+
+.achieve-stat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+  margin-left: 0.4rem;
+}
+
+/* ---- Progress Bar ---- */
+.achieve-progress-block {
+  margin-bottom: 1.75rem;
+}
+
+.achieve-progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.achieve-progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--portal-text-dim);
+  letter-spacing: 0.03em;
+}
+
+.achieve-progress-pct {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--portal-accent);
+}
+
+.achieve-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.achieve-progress-fill {
+  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, #ff5500, #ffaa00);
+  border-radius: 999px;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.achieve-progress-glow {
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffaa00;
+  box-shadow: 0 0 12px 4px rgba(255, 170, 0, 0.6);
+  animation: achieve-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes achieve-glow-pulse {
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.6; transform: translateY(-50%) scale(1.3); }
+}
+
+/* ---- Recent Strip ---- */
+.achieve-recent-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background: rgba(255, 170, 0, 0.04);
+  border: 1px solid rgba(255, 170, 0, 0.12);
+  border-radius: 10px;
+  margin-bottom: 1.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-wrap: wrap;
+}
+.achieve-recent-strip::-webkit-scrollbar { display: none; }
+
+.achieve-recent-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--portal-accent-gold);
+  flex-shrink: 0;
+  padding-right: 0.75rem;
+  border-right: 1px solid rgba(255, 170, 0, 0.2);
+}
+
+.achieve-recent-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 9999px;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.achieve-recent-pill:hover {
+  border-color: rgba(255, 170, 0, 0.3);
+  background: rgba(255, 170, 0, 0.06);
+}
+
+.achieve-recent-icon {
+  font-size: 0.9rem;
+}
+
+.achieve-recent-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--portal-text);
+  white-space: nowrap;
+}
+
+.achieve-recent-time {
+  font-size: 0.7rem;
+  color: var(--portal-text-muted);
+  white-space: nowrap;
+}
+
+/* ---- Filter Tabs ---- */
+.achieve-filter-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+
+.achieve-filter-tab {
+  padding: 0.45rem 1.1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--portal-text-dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.03em;
+  transition: all 0.2s ease;
+}
+.achieve-filter-tab:hover {
+  border-color: rgba(255, 85, 0, 0.3);
+  color: var(--portal-text);
+  background: rgba(255, 85, 0, 0.05);
+}
+.achieve-filter-tab--active {
+  background: rgba(255, 85, 0, 0.12);
+  border-color: rgba(255, 85, 0, 0.4);
+  color: var(--portal-accent);
+}
+
+/* ---- Category ---- */
+.achieve-category {
+  margin-bottom: 2.5rem;
+}
+
+.achieve-category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.achieve-category-icon {
+  display: flex;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  color: var(--portal-accent);
+  flex-shrink: 0;
+}
+.achieve-category-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.achieve-category-title {
+  flex: 1;
+  margin-bottom: 0 !important;
+}
+
+.achieve-category-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--portal-text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+/* ---- Badge Grid ---- */
+.achieve-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .achieve-badge-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .achieve-badge-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ---- Badge Card ---- */
+.achieve-badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+  overflow: hidden;
+}
+
+.achieve-badge--unlocked {
+  border-color: rgba(255, 170, 0, 0.2);
+  background: rgba(255, 170, 0, 0.03);
+}
+.achieve-badge--unlocked:hover {
+  border-color: rgba(255, 170, 0, 0.45);
+  background: rgba(255, 170, 0, 0.06);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(255, 170, 0, 0.12);
+}
+
+.achieve-badge--locked {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+}
+.achieve-badge--locked:hover {
+  filter: grayscale(0.4);
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+
+/* ---- Badge Icon ---- */
+.achieve-badge-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255, 170, 0, 0.08);
+  border: 1px solid rgba(255, 170, 0, 0.15);
+}
+
+.achieve-badge--locked .achieve-badge-icon-wrap {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.achieve-badge-icon {
+  display: flex;
+  align-items: center;
+  width: 26px;
+  height: 26px;
+  color: var(--portal-accent-gold);
+}
+.achieve-badge-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.achieve-badge--locked .achieve-badge-icon {
+  color: var(--portal-text-muted);
+}
+
+.achieve-badge-check {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--portal-main-bg);
+}
+.achieve-badge-check svg {
+  width: 10px;
+  height: 10px;
+  color: #fff;
+}
+
+.achieve-badge-lock {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--portal-main-bg);
+}
+.achieve-badge-lock svg {
+  width: 9px;
+  height: 9px;
+  color: var(--portal-text-muted);
+}
+
+/* ---- Badge Info ---- */
+.achieve-badge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.achieve-badge-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.achieve-badge-desc {
+  font-size: 0.75rem;
+  color: var(--portal-text-dim);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.achieve-badge-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #4ade80;
+  margin-top: 0.2rem;
+}
+.achieve-badge-date svg {
+  width: 10px;
+  height: 10px;
+}
+
+.achieve-badge-locked-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--portal-text-muted);
+  letter-spacing: 0.15em;
+  margin-top: 0.2rem;
+}
+
+/* ---- Badge Flavor ---- */
+.achieve-badge-flavor {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  color: var(--portal-accent-gold);
+  opacity: 0.8;
+  border-top: 1px solid rgba(255, 170, 0, 0.1);
+  padding-top: 0.6rem;
+  line-height: 1.4;
+}
+
+/* ---- Tooltip ---- */
+.achieve-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.65rem 0.9rem;
+  background: #1a0d06;
+  border: 1px solid rgba(255, 85, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  width: 200px;
+  white-space: normal;
+  pointer-events: none;
+  animation: achieve-tooltip-in 0.15s ease;
+}
+
+@keyframes achieve-tooltip-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.achieve-tooltip-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--portal-accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.achieve-tooltip span {
+  font-size: 0.72rem;
+  color: var(--portal-text-dim);
+  line-height: 1.5;
+}

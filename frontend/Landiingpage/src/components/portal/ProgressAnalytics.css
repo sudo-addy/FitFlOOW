@@ -1,0 +1,502 @@
+/* ============================================================
+   PROGRESS ANALYTICS — Saiyan Gym Member Portal
+   CSS prefix: .progress-
+   ============================================================ */
+
+.progress-page {
+  max-width: 1200px;
+}
+
+/* ---- Header Row ---- */
+.progress-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---- Time Range Selector ---- */
+.progress-time-selector {
+  display: flex;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 10px;
+  padding: 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.progress-range-btn {
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--portal-text-dim);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.progress-range-btn:hover {
+  color: var(--portal-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.progress-range-btn--active {
+  background: rgba(255, 85, 0, 0.2);
+  color: var(--portal-accent);
+  box-shadow: 0 0 12px rgba(255, 85, 0, 0.15);
+}
+
+/* ---- Metrics Grid ---- */
+.progress-metrics-grid {
+  margin-bottom: 0;
+}
+
+/* ---- Metric Card ---- */
+.progress-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.4rem;
+}
+
+.progress-metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.progress-metric-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 85, 0, 0.1);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--portal-accent);
+}
+
+.progress-metric-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.progress-change-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.progress-change-badge--good {
+  background: rgba(50, 200, 100, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(50, 200, 100, 0.2);
+}
+
+.progress-change-badge--bad {
+  background: rgba(255, 60, 60, 0.12);
+  color: #ff6060;
+  border: 1px solid rgba(255, 60, 60, 0.2);
+}
+
+.progress-metric-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.progress-metric-unit {
+  font-size: 0.82rem;
+  color: var(--portal-text-muted);
+  font-weight: 500;
+}
+
+/* Sparkline */
+.progress-sparkline {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+  padding: 0 2px;
+  margin: 0.25rem 0;
+}
+
+.progress-spark-bar {
+  flex: 1;
+  background: rgba(255, 85, 0, 0.25);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progress-spark-bar--active {
+  background: linear-gradient(180deg, #ff8800, #ff5500);
+  box-shadow: 0 0 8px rgba(255, 85, 0, 0.4);
+}
+
+/* Goal progress */
+.progress-goal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.progress-goal-label {
+  font-size: 0.72rem;
+  color: var(--portal-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 600;
+}
+
+.progress-goal-pct {
+  font-size: 0.78rem;
+  color: var(--portal-accent);
+  font-weight: 700;
+}
+
+.progress-bar-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5500, #ffaa00);
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---- Section Header ---- */
+.progress-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.progress-chart-unit {
+  font-size: 0.78rem;
+  color: var(--portal-text-muted);
+}
+
+/* ---- Volume Bar Chart ---- */
+.progress-chart-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 85, 0, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+  height: 240px;
+  overflow: hidden;
+}
+
+.progress-chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 1.75rem;
+  flex-shrink: 0;
+}
+
+.progress-y-label {
+  font-size: 0.68rem;
+  color: var(--portal-text-muted);
+  text-align: right;
+  line-height: 1;
+}
+
+.progress-chart-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(255, 85, 0, 0.1);
+  padding-bottom: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grid lines */
+.progress-chart-bars::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0.75rem;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent calc(25% - 1px),
+      rgba(255, 255, 255, 0.04) calc(25% - 1px),
+      rgba(255, 255, 255, 0.04) 25%
+    );
+  pointer-events: none;
+}
+
+.progress-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.progress-bar-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: center;
+}
+
+.progress-vol-bar {
+  width: min(36px, 90%);
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, rgba(255, 85, 0, 0.7), rgba(255, 85, 0, 0.3));
+  transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  min-height: 4px;
+}
+
+.progress-vol-bar:hover {
+  background: linear-gradient(180deg, #ff7700, rgba(255, 85, 0, 0.6));
+}
+
+.progress-vol-bar--current {
+  background: linear-gradient(180deg, #ff8800, #ff5500);
+  box-shadow: 0 0 16px rgba(255, 85, 0, 0.4), 0 0 4px rgba(255, 136, 0, 0.6);
+}
+
+.progress-vol-bar--current:hover {
+  box-shadow: 0 0 24px rgba(255, 85, 0, 0.6);
+}
+
+.progress-bar-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 5, 3, 0.95);
+  border: 1px solid rgba(255, 85, 0, 0.3);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  color: var(--portal-text);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  font-weight: 600;
+}
+
+.progress-vol-bar:hover .progress-bar-tooltip {
+  opacity: 1;
+}
+
+.progress-bar-label {
+  font-size: 0.68rem;
+  color: var(--portal-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+}
+
+/* ---- PR Table ---- */
+.progress-pr-table-wrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 85, 0, 0.2) transparent;
+}
+
+.progress-pr-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+.progress-pr-table thead tr {
+  border-bottom: 1px solid rgba(255, 85, 0, 0.12);
+}
+
+.progress-pr-table th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.progress-pr-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.2s ease;
+}
+
+.progress-pr-row:last-child {
+  border-bottom: none;
+}
+
+.progress-pr-row:hover {
+  background: rgba(255, 85, 0, 0.04);
+}
+
+.progress-pr-table td {
+  padding: 0.9rem 1rem;
+  font-size: 0.875rem;
+}
+
+.progress-pr-exercise {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: var(--portal-text);
+}
+
+.progress-pr-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.progress-pr-current {
+  font-weight: 800;
+  color: var(--portal-accent);
+  font-size: 0.95rem;
+}
+
+.progress-pr-prev {
+  color: var(--portal-text-dim);
+}
+
+.progress-pr-diff {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  background: rgba(50, 200, 100, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(50, 200, 100, 0.2);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.progress-pr-date {
+  color: var(--portal-text-muted);
+  font-size: 0.8rem;
+}
+
+/* ---- Measurement Trends ---- */
+.progress-measurements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .progress-measurements-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .progress-measurements-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.progress-meas-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 85, 0, 0.08);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.progress-meas-card:hover {
+  border-color: rgba(255, 85, 0, 0.2);
+  background: rgba(255, 85, 0, 0.03);
+}
+
+.progress-meas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.progress-meas-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--portal-text-muted);
+}
+
+.progress-meas-change {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.progress-meas-change--good {
+  color: #4ade80;
+}
+
+.progress-meas-value {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--portal-text);
+  line-height: 1;
+}
+
+.progress-meas-bar-track {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-meas-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5500, #ffaa00);
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progress-meas-pct {
+  font-size: 0.68rem;
+  color: var(--portal-text-muted);
+}
+
+/* ---- Chart section ---- */
+.progress-chart-section {
+  margin-bottom: 0;
+}

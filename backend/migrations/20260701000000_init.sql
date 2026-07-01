@@ -1,0 +1,72 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    tier TEXT NOT NULL DEFAULT 'Elite',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workouts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    duration INTEGER NOT NULL,
+    volume REAL NOT NULL,
+    calories INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS exercises (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    sets INTEGER NOT NULL,
+    reps INTEGER NOT NULL,
+    weight REAL NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT 0,
+    workout_id INTEGER NOT NULL,
+    FOREIGN KEY(workout_id) REFERENCES workouts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS class_bookings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    class_name TEXT NOT NULL,
+    date TEXT NOT NULL,
+    time TEXT NOT NULL,
+    duration TEXT NOT NULL,
+    instructor TEXT NOT NULL,
+    intensity TEXT NOT NULL,
+    status TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS nutrition_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    calories_consumed INTEGER NOT NULL,
+    calories_target INTEGER NOT NULL DEFAULT 2400,
+    protein_consumed INTEGER NOT NULL,
+    protein_target INTEGER NOT NULL DEFAULT 180,
+    carbs_consumed INTEGER NOT NULL,
+    carbs_target INTEGER NOT NULL DEFAULT 260,
+    fat_consumed INTEGER NOT NULL,
+    fat_target INTEGER NOT NULL DEFAULT 70,
+    water_cups INTEGER NOT NULL DEFAULT 0,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_achievements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT NOT NULL,
+    name TEXT NOT NULL,
+    desc TEXT NOT NULL,
+    category TEXT NOT NULL,
+    unlocked BOOLEAN NOT NULL DEFAULT 0,
+    unlocked_at DATETIME,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE(user_id, code)
+);

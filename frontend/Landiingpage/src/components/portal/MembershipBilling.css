@@ -1,0 +1,372 @@
+/* ============================================================
+   MEMBERSHIP & BILLING PAGE — Saiyan Gym Member Portal
+   ============================================================ */
+
+.billing-page {
+  animation: billing-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes billing-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.billing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .billing-grid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+/* Plan Card */
+.billing-plan-card {
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.billing-plan-card::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 85, 0, 0.08), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.billing-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.billing-plan-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  margin-top: 0.25rem;
+  text-shadow: 0 0 16px rgba(255, 85, 0, 0.15);
+}
+
+.billing-plan-price-box {
+  display: flex;
+  align-items: baseline;
+  background: rgba(255, 85, 0, 0.06);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.billing-plan-price {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: var(--portal-accent);
+}
+
+.billing-plan-freq {
+  font-size: 0.8rem;
+  color: var(--portal-text-dim);
+  margin-left: 0.25rem;
+}
+
+.billing-plan-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.billing-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.billing-detail-label {
+  font-size: 0.85rem;
+  color: var(--portal-text-dim);
+}
+
+.billing-detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.billing-plan-features {
+  margin-bottom: 1.5rem;
+}
+
+.billing-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.billing-features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  color: var(--portal-text-dim);
+  line-height: 1.4;
+}
+
+.billing-features-list .feature-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--portal-accent);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.billing-features-list .premium-feature {
+  color: #ffffff;
+  font-weight: 500;
+  background: linear-gradient(90deg, rgba(255, 170, 0, 0.08), transparent);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border-left: 2px solid var(--portal-accent-gold);
+}
+
+.billing-features-list .premium-feature .feature-icon {
+  color: var(--portal-accent-gold);
+}
+
+.billing-upgrade-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* Referral Card */
+.billing-referral-desc {
+  font-size: 0.85rem;
+  color: var(--portal-text-dim);
+  line-height: 1.5;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.billing-referral-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 8px;
+  padding: 0.25rem 0.25rem 0.25rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.billing-referral-code {
+  flex: 1;
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--portal-accent-gold);
+}
+
+.billing-copy-btn {
+  font-size: 0.75rem;
+  padding: 0.45rem 1rem;
+}
+
+.billing-referral-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--portal-text-dim);
+}
+
+.billing-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.billing-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--portal-accent), var(--portal-accent-gold));
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(255, 85, 0, 0.5);
+}
+
+/* Payment Method */
+.billing-payment-card {
+  margin-bottom: 2rem;
+}
+
+.billing-card-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.billing-card-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.visa-svg {
+  color: var(--portal-accent);
+  opacity: 0.85;
+}
+
+.billing-card-number {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.billing-card-exp {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--portal-text-muted);
+  margin-top: 0.1rem;
+}
+
+/* Invoices list */
+.billing-invoice-card {
+  margin-bottom: 2rem;
+}
+
+.billing-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.billing-table th {
+  padding: 0.75rem 0.5rem;
+  color: var(--portal-text-muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(255, 85, 0, 0.08);
+  text-transform: uppercase;
+}
+
+.billing-table td {
+  padding: 0.9rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.billing-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.inv-id {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.inv-date {
+  color: var(--portal-text-dim);
+}
+
+.inv-amount {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.billing-download-btn {
+  background: transparent;
+  border: none;
+  color: var(--portal-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.billing-download-btn:hover {
+  color: var(--portal-accent);
+  background: rgba(255, 85, 0, 0.08);
+}
+
+/* Danger Zone Card */
+.billing-danger-card {
+  border: 1px solid rgba(255, 60, 60, 0.15);
+  background: rgba(255, 60, 60, 0.02);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.billing-danger-card:hover {
+  border-color: rgba(255, 60, 60, 0.3);
+  background: rgba(255, 60, 60, 0.04);
+}
+
+.billing-danger-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ff6060;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.billing-danger-desc {
+  font-size: 0.8rem;
+  color: var(--portal-text-dim);
+  line-height: 1.5;
+}
+
+.billing-cancel-btn {
+  padding: 0.55rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(255, 60, 60, 0.3);
+  color: #ff6060;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.billing-cancel-btn:hover {
+  background: #ff6060;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(255, 96, 96, 0.25);
+  transform: translateY(-1px);
+}

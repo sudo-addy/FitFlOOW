@@ -1,0 +1,748 @@
+/* ============================================================
+   NUTRITION TRACKER — Saiyan Gym Member Portal
+   CSS prefix: .nutrition-
+   ============================================================ */
+
+.nutrition-page {
+  max-width: 1200px;
+}
+
+/* ---- Header Row ---- */
+.nutrition-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---- Add Meal Form ---- */
+.nutrition-add-form {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: nutrition-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes nutrition-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nutrition-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.nutrition-form-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.nutrition-form-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--portal-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.nutrition-form-close:hover {
+  border-color: rgba(255, 60, 60, 0.4);
+  color: #ff6060;
+  background: rgba(255, 60, 60, 0.08);
+}
+.nutrition-form-close svg { width: 14px; height: 14px; }
+
+.nutrition-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .nutrition-form-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.nutrition-form-group--wide {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .nutrition-form-group--wide {
+    grid-column: span 2;
+  }
+}
+
+.nutrition-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.nutrition-form-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.nutrition-form-input {
+  padding: 0.6rem 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 85, 0, 0.15);
+  border-radius: 8px;
+  color: var(--portal-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nutrition-form-input::placeholder {
+  color: var(--portal-text-muted);
+}
+
+.nutrition-form-input:focus {
+  border-color: rgba(255, 85, 0, 0.5);
+  background: rgba(255, 85, 0, 0.06);
+}
+
+.nutrition-form-input option {
+  background: #1a0a05;
+}
+
+.nutrition-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ---- Macro Rings Section ---- */
+.nutrition-rings-section {
+  margin-bottom: 0;
+}
+
+.nutrition-rings-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 85, 0, 0.12);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nutrition-rings-left {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nutrition-rings-heading {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.nutrition-rings-date {
+  font-size: 0.8rem;
+  color: var(--portal-text-muted);
+  margin: 0;
+}
+
+.nutrition-calorie-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.nutrition-cal-value {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--portal-accent);
+  line-height: 1;
+}
+
+.nutrition-cal-sep {
+  font-size: 1.2rem;
+  color: var(--portal-text-muted);
+}
+
+.nutrition-cal-target {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--portal-text-dim);
+}
+
+.nutrition-cal-unit {
+  font-size: 0.85rem;
+  color: var(--portal-text-muted);
+  margin-left: 0.25rem;
+}
+
+.nutrition-cal-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.nutrition-cal-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff5500, #ff8800);
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 10px rgba(255, 85, 0, 0.3);
+}
+
+.nutrition-cal-remain {
+  font-size: 0.8rem;
+  color: var(--portal-text-dim);
+  margin: 0;
+}
+
+.nutrition-cal-remain strong {
+  color: var(--portal-text);
+}
+
+/* Rings row */
+.nutrition-rings-row {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nutrition-ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.nutrition-ring-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--portal-text-dim);
+}
+
+.nutrition-ring-sub {
+  font-size: 0.68rem;
+  color: var(--portal-text-muted);
+}
+
+/* ---- Water Section ---- */
+.nutrition-water-section {
+  margin-bottom: 0;
+}
+
+.nutrition-water-card {
+  background: rgba(0, 180, 255, 0.04);
+  border: 1px solid rgba(0, 180, 255, 0.12);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nutrition-water-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nutrition-water-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 180, 255, 0.1);
+  border: 1px solid rgba(0, 180, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #00ccff;
+  flex-shrink: 0;
+}
+
+.nutrition-water-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nutrition-water-heading {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  margin: 0;
+}
+
+.nutrition-water-sub {
+  font-size: 0.78rem;
+  color: var(--portal-text-muted);
+  margin: 0;
+}
+
+.nutrition-water-stat {
+  margin-left: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.nutrition-water-ml {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #00ccff;
+}
+
+.nutrition-water-target {
+  font-size: 0.8rem;
+  color: var(--portal-text-muted);
+}
+
+/* Cup buttons */
+.nutrition-cups-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nutrition-cup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nutrition-cup svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nutrition-cup:hover {
+  border-color: rgba(0, 180, 255, 0.3);
+  color: rgba(0, 204, 255, 0.5);
+  background: rgba(0, 180, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.nutrition-cup--filled {
+  background: rgba(0, 180, 255, 0.12);
+  border-color: rgba(0, 204, 255, 0.4);
+  color: #00ccff;
+  box-shadow: 0 0 12px rgba(0, 204, 255, 0.15);
+}
+
+.nutrition-cup--filled:hover {
+  background: rgba(0, 180, 255, 0.18);
+  border-color: rgba(0, 204, 255, 0.6);
+}
+
+/* ---- Meals Section ---- */
+.nutrition-meals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.nutrition-meals-header .portal-section-title {
+  margin-bottom: 0;
+}
+
+.nutrition-meal-totals {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nutrition-total-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.nutrition-total-chip--cal {
+  background: rgba(255, 85, 0, 0.12);
+  color: var(--portal-accent);
+  border: 1px solid rgba(255, 85, 0, 0.2);
+}
+
+.nutrition-total-chip--pro {
+  background: rgba(255, 170, 0, 0.12);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.2);
+}
+
+.nutrition-meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ---- Meal Card ---- */
+.nutrition-meal-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.nutrition-meal-card:hover {
+  border-color: rgba(255, 85, 0, 0.2);
+}
+
+.nutrition-meal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  transition: background 0.2s ease;
+}
+
+.nutrition-meal-header:hover {
+  background: rgba(255, 85, 0, 0.04);
+}
+
+.nutrition-meal-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.nutrition-meal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.nutrition-meal-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--portal-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nutrition-meal-meta {
+  font-size: 0.75rem;
+  color: var(--portal-text-muted);
+}
+
+.nutrition-meal-macros {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.nutrition-macro-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nutrition-macro-pill--cal {
+  background: rgba(255, 85, 0, 0.12);
+  color: #ff7733;
+  border: 1px solid rgba(255, 85, 0, 0.2);
+}
+
+.nutrition-macro-pill--pro {
+  background: rgba(255, 170, 0, 0.12);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.2);
+}
+
+.nutrition-macro-pill--carb {
+  background: rgba(0, 180, 255, 0.1);
+  color: #00ccff;
+  border: 1px solid rgba(0, 180, 255, 0.2);
+}
+
+.nutrition-macro-pill--fat {
+  background: rgba(170, 85, 255, 0.1);
+  color: #bb77ff;
+  border: 1px solid rgba(170, 85, 255, 0.2);
+}
+
+.nutrition-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--portal-text-muted);
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nutrition-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* Meal body (expanded) */
+.nutrition-meal-body {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid rgba(255, 85, 0, 0.08);
+  animation: nutrition-expand 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes nutrition-expand {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nutrition-items-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+  margin: 1rem 0 0.6rem;
+}
+
+.nutrition-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nutrition-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--portal-text-dim);
+}
+
+.nutrition-item-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--portal-accent);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.nutrition-macro-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nutrition-macro-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nutrition-macro-bar-label {
+  font-size: 0.72rem;
+  color: var(--portal-text-muted);
+  width: 52px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.nutrition-macro-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.nutrition-macro-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nutrition-macro-bar-val {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--portal-text-dim);
+  width: 32px;
+  flex-shrink: 0;
+}
+
+/* ---- Weekly Summary ---- */
+.nutrition-weekly-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 800px) {
+  .nutrition-weekly-grid {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.nutrition-weekly-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 200px;
+}
+
+.nutrition-weekly-stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 85, 0, 0.1);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.nutrition-consistency-bar-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.nutrition-consistency-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffaa00, #ff8800);
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Weekly chart */
+.nutrition-weekly-chart {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 85, 0, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.nutrition-week-bars {
+  flex: 1;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  height: 160px;
+}
+
+.nutrition-week-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  height: 100%;
+}
+
+.nutrition-week-bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 85, 0, 0.08);
+}
+
+.nutrition-week-bar {
+  width: min(28px, 80%);
+  min-height: 4px;
+  border-radius: 4px 4px 0 0;
+  background: rgba(255, 85, 0, 0.3);
+  transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
+  cursor: pointer;
+}
+
+.nutrition-week-bar:hover {
+  background: rgba(255, 85, 0, 0.55);
+}
+
+.nutrition-week-bar--today {
+  background: linear-gradient(180deg, #ff8800, #ff5500);
+  box-shadow: 0 0 14px rgba(255, 85, 0, 0.35);
+}
+
+.nutrition-week-bar--today:hover {
+  box-shadow: 0 0 20px rgba(255, 85, 0, 0.5);
+}
+
+.nutrition-week-day {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--portal-text-muted);
+}
+
+.nutrition-week-cal {
+  font-size: 0.65rem;
+  color: var(--portal-text-muted);
+}

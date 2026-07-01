@@ -121,13 +121,13 @@ pub struct UpdateTierRequest {
 pub async fn sign_up(
     State(pool): State<SqlitePool>,
     Json(payload): Json<SignUpRequest>,
-) -> Result<impl IntoResponse, (StatusCode, String)> {
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
     if payload.name.trim().is_empty() || payload.email.trim().is_empty() || payload.password.trim().is_empty() {
-        return Err((StatusCode::BAD_REQUEST, "Name, email, and password are required.".to_string()));
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Name, email, and password are required." }))));
     }
 
     if payload.password.len() < 8 {
-        return Err((StatusCode::BAD_REQUEST, "Password must be at least 8 characters.".to_string()));
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Password must be at least 8 characters." }))));
     }
 
     // Check if email already exists
@@ -135,15 +135,15 @@ pub async fn sign_up(
         .bind(&payload.email)
         .fetch_one(&pool)
         .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
 
     if exists {
-        return Err((StatusCode::BAD_REQUEST, "Email is already registered.".to_string()));
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Email is already registered." }))));
     }
 
     // Hash password
     let hashed = hash(&payload.password, DEFAULT_COST)
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Password hashing failed.".to_string()))?;
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": "Password hashing failed." }))))?;
 
     // Create user
     let user_id: i64 = sqlx::query_scalar(
@@ -154,7 +154,7 @@ pub async fn sign_up(
     .bind(hashed)
     .fetch_one(&pool)
     .await
-    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
 
     // Seed default achievements as locked for this user
     let default_achievements = vec![
@@ -177,11 +177,12 @@ pub async fn sign_up(
             .bind(user_id)
             .execute(&pool)
             .await
-            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
     }
 
     // Generate token
-    let token = generate_jwt(user_id)?;
+    let token = generate_jwt(user_id)
+        .map_err(|e| (e.0, Json(json!({ "error": e.1 }))))?;
 
     Ok((
         StatusCode::CREATED,
@@ -201,7 +202,7 @@ pub async fn sign_up(
 pub async fn sign_in(
     State(pool): State<SqlitePool>,
     Json(payload): Json<SignInRequest>,
-) -> Result<impl IntoResponse, (StatusCode, String)> {
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
     // Retrieve user
     let row: (i64, String, String, String, String) = sqlx::query_as(
         "SELECT id, name, email, password, tier FROM users WHERE email = ?"
@@ -209,17 +210,18 @@ pub async fn sign_in(
     .bind(&payload.email)
     .fetch_optional(&pool)
     .await
-    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
-    .ok_or_else(|| (StatusCode::BAD_REQUEST, "Invalid email or password.".to_string()))?;
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?
+    .ok_or_else(|| (StatusCode::BAD_REQUEST, Json(json!({ "error": "Invalid email or password." }))))?;
 
     // Verify password
     let is_match = verify(&payload.password, &row.3).unwrap_or(false);
     if !is_match {
-        return Err((StatusCode::BAD_REQUEST, "Invalid email or password.".to_string()));
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Invalid email or password." }))));
     }
 
     // Generate token
-    let token = generate_jwt(row.0)?;
+    let token = generate_jwt(row.0)
+        .map_err(|e| (e.0, Json(json!({ "error": e.1 }))))?;
 
     Ok((
         StatusCode::OK,

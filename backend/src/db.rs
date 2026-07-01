@@ -1,15 +1,65 @@
 use sqlx::sqlite::SqlitePool;
+use sqlx::postgres::PgPool;
 use sqlx::migrate::MigrateDatabase;
 use bcrypt::{hash, DEFAULT_COST};
 use std::env;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::BufReader;
+use std::time::SystemTime;
 use serde::Deserialize;
 
+fn get_file_modified_time(path: &str) -> Option<SystemTime> {
+    fs::metadata(path).ok().and_then(|meta| meta.modified().ok())
+}
+
+async fn sync_sqlite_to_postgres(pg_pool: &PgPool, sqlite_path: &str) -> Result<(), sqlx::Error> {
+    if let Ok(data) = fs::read(sqlite_path) {
+        sqlx::query("INSERT INTO sqlite_db_backup (id, file_data, updated_at) VALUES (1, $1, NOW()) ON CONFLICT (id) DO UPDATE SET file_data = EXCLUDED.file_data, updated_at = NOW()")
+            .bind(data)
+            .execute(pg_pool)
+            .await?;
+    }
+    Ok(())
+}
+
+async fn restore_sqlite_from_postgres(pg_pool: &PgPool, sqlite_path: &str) -> Result<bool, sqlx::Error> {
+    sqlx::query("CREATE TABLE IF NOT EXISTS sqlite_db_backup (id INT PRIMARY KEY, file_data BYTEA, updated_at TIMESTAMP)")
+        .execute(pg_pool)
+        .await?;
+
+    let row: Option<(Vec<u8>,)> = sqlx::query_as("SELECT file_data FROM sqlite_db_backup WHERE id = 1")
+        .fetch_optional(pg_pool)
+        .await?;
+
+    if let Some((data,)) = row {
+        if !data.is_empty() {
+            fs::write(sqlite_path, data).expect("Failed to write restored SQLite file");
+            return Ok(true);
+        }
+    }
+    Ok(false)
+}
+
 pub async fn init_db() -> SqlitePool {
-    let database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite://dev.db".to_string());
-    
-    // Create the DB file if it doesn't exist
+    let mut database_url = env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite://dev.db".to_string());
+    let mut pg_pool_opt: Option<PgPool> = None;
+    let sqlite_path = "dev.db";
+
+    if database_url.starts_with("postgres://") || database_url.starts_with("postgresql://") {
+        println!("🚀 Detected PostgreSQL database URL. Enabling SQLite-over-Postgres persistence.");
+        let pg_url = database_url.clone();
+        database_url = format!("sqlite://{}", sqlite_path);
+
+        let pg_pool = PgPool::connect(&pg_url).await.expect("Failed to connect to PostgreSQL backup database");
+        let restored = restore_sqlite_from_postgres(&pg_pool, sqlite_path).await.unwrap_or(false);
+        if restored {
+            println!("✅ Restored local SQLite database file from cloud PostgreSQL backup.");
+        } else {
+            println!("ℹ️ No cloud backup found in PostgreSQL. Starting with a new SQLite database.");
+        }
+        pg_pool_opt = Some(pg_pool);
+    }
+
     if !sqlx::Sqlite::database_exists(&database_url).await.unwrap_or(false) {
         sqlx::Sqlite::create_database(&database_url).await.expect("Failed to create SQLite database");
     }
@@ -24,6 +74,34 @@ pub async fn init_db() -> SqlitePool {
 
     seed_database_if_empty(&pool).await;
     seed_exercises_lookup(&pool).await;
+
+    if let Some(pg_pool) = pg_pool_opt {
+        // Initial sync of seeded database
+        if let Err(e) = sync_sqlite_to_postgres(&pg_pool, sqlite_path).await {
+            println!("⚠️ Failed to write initial SQLite backup to PostgreSQL: {:?}", e);
+        } else {
+            println!("💾 Initial database backup uploaded to PostgreSQL successfully.");
+        }
+
+        tokio::spawn(async move {
+            let mut last_modified = get_file_modified_time(sqlite_path);
+            loop {
+                tokio::time::sleep(tokio::time::Duration::from_secs(10)).await;
+                let current_modified = get_file_modified_time(sqlite_path);
+                if current_modified != last_modified {
+                    match sync_sqlite_to_postgres(&pg_pool, sqlite_path).await {
+                        Ok(_) => {
+                            last_modified = current_modified;
+                            println!("💾 SQLite database changes backed up to PostgreSQL successfully.");
+                        }
+                        Err(e) => {
+                            println!("⚠️ SQLite backup to PostgreSQL failed: {:?}", e);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     pool
 }

@@ -86,6 +86,7 @@ export default function WorkoutLogger() {
   const [notes, setNotes] = useState('');
   const [sessionStarted, setSessionStarted] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [customTemplates, setCustomTemplates] = useState([]);
 
   // Add exercise form
   const [addMusclGroup, setAddMuscleGroup] = useState('Chest');
@@ -101,6 +102,17 @@ export default function WorkoutLogger() {
   const [activeStepsTitle, setActiveStepsTitle] = useState('');
 
   const elapsed = useTimer(sessionStarted && !finished);
+
+  // Fetch custom templates on mount
+  useEffect(() => {
+    api.getTemplates()
+      .then((res) => {
+        setCustomTemplates(res || []);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch custom templates:', err);
+      });
+  }, []);
 
   // Fetch suggestions
   useEffect(() => {
@@ -130,11 +142,35 @@ export default function WorkoutLogger() {
   /* Template load */
   const applyTemplate = (t) => {
     setTemplate(t);
-    const tpl = TEMPLATES[t];
-    if (tpl.length > 0) {
-      setExercises(tpl.map((ex) => ({ ...ex, sets: ex.sets.map((s) => ({ ...s })) })));
-      setSessionName(t + ' Session');
-      showToast(`Loaded template: ${t}`, 'info');
+    if (TEMPLATES[t]) {
+      const tpl = TEMPLATES[t];
+      if (tpl.length > 0) {
+        setExercises(tpl.map((ex) => ({ ...ex, sets: ex.sets.map((s) => ({ ...s })) })));
+        setSessionName(t + ' Session');
+        showToast(`Loaded template: ${t}`, 'info');
+      } else {
+        setExercises([]);
+        setSessionName('');
+      }
+      return;
+    }
+
+    // Check custom templates
+    const customTpl = customTemplates.find((tpl) => tpl.name === t);
+    if (customTpl) {
+      const mappedExercises = customTpl.exercises.map((ex) => ({
+        name: ex.name,
+        muscle: 'Chest', // Fallback muscle group
+        sets: Array.from({ length: ex.sets }, () => ({
+          reps: ex.reps,
+          weight: ex.weight,
+          done: false,
+        })),
+        steps: [],
+      }));
+      setExercises(mappedExercises);
+      setSessionName(customTpl.name + ' Session');
+      showToast(`Loaded template: ${customTpl.name}`, 'info');
     } else {
       setExercises([]);
       setSessionName('');
@@ -194,10 +230,53 @@ export default function WorkoutLogger() {
     });
   };
 
+  /* Save current layout as a new reusable template */
+  const saveAsTemplate = async () => {
+    const defaultName = sessionName.replace(/\s+Session$/, '') || 'My Template';
+    const nameInput = prompt('Enter a name for this workout template:', defaultName);
+    if (!nameInput || !nameInput.trim()) return;
+
+    try {
+      const payload = {
+        name: nameInput.trim(),
+        exercises: exercises.map((ex) => ({
+          name: ex.name,
+          sets: ex.sets.length,
+          reps: ex.sets[0]?.reps || 8,
+          weight: ex.sets[0]?.weight || 60,
+        })),
+      };
+      await api.createTemplate(payload);
+      showToast(`Template "${payload.name}" saved successfully!`, 'success');
+      
+      const updated = await api.getTemplates();
+      setCustomTemplates(updated || []);
+    } catch (err) {
+      showToast(err.message || 'Failed to save template.', 'error');
+    }
+  };
+
   /* Finish session */
-  const finishSession = () => {
-    setFinished(true);
-    showToast(`⚡ Workout logged successfully! +${totalVolume.toLocaleString()} kg total volume`, 'success');
+  const finishSession = async () => {
+    if (exercises.length === 0) return;
+    try {
+      const payload = {
+        name: sessionName.trim() || 'Custom Session',
+        duration: Math.ceil(elapsed / 60) || 1,
+        exercises: exercises.map((ex) => ({
+          name: ex.name,
+          sets: ex.sets.length,
+          reps: ex.sets[0]?.reps || 8,
+          weight: ex.sets[0]?.weight || 60,
+          completed: ex.sets.some((s) => s.done),
+        })),
+      };
+      await api.logWorkout(payload);
+      setFinished(true);
+      showToast(`⚡ Workout logged successfully! +${totalVolume.toLocaleString()} kg total volume`, 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to save workout session.', 'error');
+    }
   };
 
   if (finished) {
@@ -226,13 +305,24 @@ export default function WorkoutLogger() {
                 <span className="logger-complete-stat-label">Total Volume</span>
               </div>
             </div>
-            <button
-              className="portal-btn-primary logger-new-btn"
-              onClick={() => { setFinished(false); setSessionStarted(false); setExercises([]); setSessionName(''); setNotes(''); setTemplate('Custom'); }}
-              id="logger-new-session-btn"
-            >
-              Log Another Session
-            </button>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem', flexWrap: 'wrap' }}>
+              <button
+                className="portal-btn-primary logger-new-btn"
+                onClick={() => { setFinished(false); setSessionStarted(false); setExercises([]); setSessionName(''); setNotes(''); setTemplate('Custom'); }}
+                id="logger-new-session-btn"
+                style={{ minWidth: '180px' }}
+              >
+                Log Another Session
+              </button>
+              <button
+                className="portal-btn-secondary logger-save-template-btn"
+                onClick={saveAsTemplate}
+                id="logger-save-template-btn"
+                style={{ minWidth: '180px' }}
+              >
+                Save as Template
+              </button>
+            </div>
           </div>
         </div>
       </PortalLayout>
@@ -293,9 +383,19 @@ export default function WorkoutLogger() {
                 value={template}
                 onChange={(e) => applyTemplate(e.target.value)}
               >
-                {Object.keys(TEMPLATES).map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+                <option value="Custom">Custom (Empty)</option>
+                <optgroup label="Preset Templates">
+                  {Object.keys(TEMPLATES).filter((t) => t !== 'Custom').map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </optgroup>
+                {customTemplates.length > 0 && (
+                  <optgroup label="My Templates">
+                    {customTemplates.map((tpl) => (
+                      <option key={tpl.name} value={tpl.name}>{tpl.name}</option>
+                    ))}
+                  </optgroup>
+                )}
               </select>
               <svg className="logger-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M6 9l6 6 6-6" />
@@ -303,6 +403,109 @@ export default function WorkoutLogger() {
             </div>
           </div>
         </div>
+
+        {/* ── Quick Start from Template Grid ── */}
+        {!sessionStarted && (
+          <div className="logger-quick-start-section" style={{ marginBottom: '2.5rem' }}>
+            <h2 className="portal-section-title" style={{ marginBottom: '1.25rem' }}>Quick Start from Template</h2>
+            <div className="logger-template-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
+              {Object.keys(TEMPLATES).filter(t => t !== 'Custom').map((tName) => (
+                <div 
+                  key={tName}
+                  className="logger-template-card-quick portal-card"
+                  onClick={() => {
+                    applyTemplate(tName);
+                    setSessionStarted(true);
+                    showToast(`Quick Start: ${tName} session active!`, 'success');
+                  }}
+                  style={{
+                    backgroundColor: 'rgba(255, 85, 0, 0.03)',
+                    border: '1px solid rgba(255, 85, 0, 0.15)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '130px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 85, 0, 0.7)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 85, 0, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 85, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 85, 0, 0.15)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 85, 0, 0.03)';
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                  }}
+                >
+                  <div>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.35rem', letterSpacing: '-0.02em' }}>{tName}</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+                      {TEMPLATES[tName].length} exercises configured
+                    </p>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#ffaa00', textTransform: 'uppercase', letterSpacing: '0.05em', alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Quick Start <span style={{ transition: 'transform 0.2s' }}>&rarr;</span>
+                  </span>
+                </div>
+              ))}
+
+              {customTemplates.map((tpl) => (
+                <div 
+                  key={tpl.id}
+                  className="logger-template-card-quick portal-card"
+                  onClick={() => {
+                    applyTemplate(tpl.name);
+                    setSessionStarted(true);
+                    showToast(`Quick Start: ${tpl.name} session active!`, 'success');
+                  }}
+                  style={{
+                    backgroundColor: 'rgba(255, 170, 0, 0.03)',
+                    border: '1px solid rgba(255, 170, 0, 0.15)',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    minHeight: '130px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 170, 0, 0.7)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 170, 0, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(255, 170, 0, 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 170, 0, 0.15)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 170, 0, 0.03)';
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                  }}
+                >
+                  <div>
+                    <span style={{ fontSize: '0.65rem', fontWeight: 800, color: '#ffaa00', backgroundColor: 'rgba(255,170,0,0.12)', padding: '3px 8px', borderRadius: '4px', textTransform: 'uppercase', display: 'inline-block', marginBottom: '0.6rem', border: '1px solid rgba(255,170,0,0.2)' }}>Custom</span>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.35rem', letterSpacing: '-0.02em' }}>{tpl.name}</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+                      {tpl.exercises.length} exercises configured
+                    </p>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#ffaa00', textTransform: 'uppercase', letterSpacing: '0.05em', alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    Quick Start <span style={{ transition: 'transform 0.2s' }}>&rarr;</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Session Stats Bar (when active) ── */}
         {sessionStarted && (

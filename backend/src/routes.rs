@@ -1000,3 +1000,110 @@ pub async fn reset_password(
     Ok(Json(json!({ "message": "Password has been successfully reset." })))
 }
 
+// ---- WORKOUT TEMPLATES ----
+
+#[derive(Deserialize)]
+pub struct CreateTemplateRequest {
+    name: String,
+    exercises: Vec<ExerciseInput>,
+}
+
+#[derive(Serialize)]
+pub struct TemplateExerciseResponse {
+    id: i64,
+    name: String,
+    sets: i32,
+    reps: i32,
+    weight: f64,
+}
+
+#[derive(Serialize)]
+pub struct WorkoutTemplateResponse {
+    id: i64,
+    name: String,
+    exercises: Vec<TemplateExerciseResponse>,
+}
+
+pub async fn create_workout_template(
+    auth: AuthUser,
+    State(pool): State<SqlitePool>,
+    Json(payload): Json<CreateTemplateRequest>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    if payload.name.trim().is_empty() || payload.exercises.is_empty() {
+        return Err((StatusCode::BAD_REQUEST, "Template name and exercises are required.".to_string()));
+    }
+
+    let template_id: i64 = sqlx::query_scalar(
+        "INSERT INTO workout_templates (name, user_id) VALUES (?, ?) RETURNING id"
+    )
+    .bind(&payload.name)
+    .bind(auth.user_id)
+    .fetch_one(&pool)
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    for ex in &payload.exercises {
+        sqlx::query(
+            "INSERT INTO template_exercises (name, sets, reps, weight, template_id) VALUES (?, ?, ?, ?, ?)"
+        )
+        .bind(&ex.name)
+        .bind(ex.sets)
+        .bind(ex.reps)
+        .bind(ex.weight)
+        .bind(template_id)
+        .execute(&pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    }
+
+    Ok(Json(json!({
+        "message": "Template saved successfully.",
+        "templateId": template_id
+    })))
+}
+
+pub async fn get_workout_templates(
+    auth: AuthUser,
+    State(pool): State<SqlitePool>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    let templates_rows: Vec<(i64, String)> = sqlx::query_as(
+        "SELECT id, name FROM workout_templates WHERE user_id = ? ORDER BY created_at DESC"
+    )
+    .bind(auth.user_id)
+    .fetch_all(&pool)
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    let mut templates = Vec::new();
+
+    for (t_id, name) in templates_rows {
+        let exercises_rows: Vec<(i64, String, i32, i32, f64)> = sqlx::query_as(
+            "SELECT id, name, sets, reps, weight FROM template_exercises WHERE template_id = ?"
+        )
+        .bind(t_id)
+        .fetch_all(&pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+        let exercises = exercises_rows
+            .into_iter()
+            .map(|(e_id, ex_name, sets, reps, weight)| TemplateExerciseResponse {
+                id: e_id,
+                name: ex_name,
+                sets,
+                reps,
+                weight,
+            })
+            .collect();
+
+        templates.push(WorkoutTemplateResponse {
+            id: t_id,
+            name,
+            exercises,
+        });
+    }
+
+    Ok(Json(templates))
+}
+
+

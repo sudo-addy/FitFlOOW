@@ -57,6 +57,7 @@ async fn main() {
         .route("/api/dashboard/stats", get(routes::get_dashboard_stats))
         // Workouts
         .route("/api/workouts", get(routes::get_workouts_history).post(routes::log_workout))
+        .route("/api/workouts/templates", get(routes::get_workout_templates).post(routes::create_workout_template))
         // Classes
         .route("/api/classes", get(routes::get_booked_classes))
         .route("/api/classes/book", post(routes::book_class))

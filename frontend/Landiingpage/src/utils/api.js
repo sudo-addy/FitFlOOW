@@ -112,6 +112,22 @@ export const api = {
     return data;
   },
 
+  getTemplates: async () => {
+    const res = await request(`${API_BASE}/workouts/templates`);
+    if (!res.ok) throw new Error('Failed to load workout templates.');
+    return res.json();
+  },
+
+  createTemplate: async (templateData) => {
+    const res = await request(`${API_BASE}/workouts/templates`, {
+      method: 'POST',
+      body: JSON.stringify(templateData),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to save workout template.');
+    return data;
+  },
+
   // Classes
   getBookings: async () => {
     const res = await request(`${API_BASE}/classes`);

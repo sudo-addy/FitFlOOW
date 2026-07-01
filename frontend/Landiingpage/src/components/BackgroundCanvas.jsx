@@ -1,5 +1,55 @@
 import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  ACESFilmicToneMapping,
+  AmbientLight,
+  DirectionalLight,
+  PointLight,
+  Group,
+  SphereGeometry,
+  MeshPhysicalMaterial,
+  Mesh,
+  MeshBasicMaterial,
+  AdditiveBlending,
+  Shape,
+  ExtrudeGeometry,
+  MeshStandardMaterial,
+  CanvasTexture,
+  BufferGeometry,
+  BufferAttribute,
+  ShaderMaterial,
+  Vector2,
+  Points,
+  Clock
+} from 'three';
+
+const THREE = {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  ACESFilmicToneMapping,
+  AmbientLight,
+  DirectionalLight,
+  PointLight,
+  Group,
+  SphereGeometry,
+  MeshPhysicalMaterial,
+  Mesh,
+  MeshBasicMaterial,
+  AdditiveBlending,
+  Shape,
+  ExtrudeGeometry,
+  MeshStandardMaterial,
+  CanvasTexture,
+  BufferGeometry,
+  BufferAttribute,
+  ShaderMaterial,
+  Vector2,
+  Points,
+  Clock
+};
 
 export default function BackgroundCanvas() {
   const canvasRef = useRef(null);

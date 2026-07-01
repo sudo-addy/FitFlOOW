@@ -579,3 +579,40 @@
   width: 14px;
   height: 14px;
 }
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 600px) {
+  .classes-header-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .classes-header-stats {
+    align-self: flex-start;
+  }
+  .classes-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .classes-filter-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 2px;
+  }
+  .classes-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 440px) {
+  .classes-grid {
+    grid-template-columns: 1fr;
+  }
+  .classes-card {
+    padding: 1.25rem 1rem;
+  }
+}
+

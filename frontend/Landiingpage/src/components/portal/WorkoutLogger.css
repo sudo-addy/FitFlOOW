@@ -613,3 +613,72 @@
 .logger-new-btn {
   margin-top: 0.5rem;
 }
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 600px) {
+  .logger-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .logger-timer {
+    min-width: unset;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+  }
+  .logger-top-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .logger-top-controls > .logger-field-group:first-child,
+  .logger-top-controls > .logger-field-group:last-child {
+    width: 100%;
+  }
+  .logger-add-ex-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .logger-add-ex-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .logger-complete-stats {
+    gap: 1.5rem;
+    padding: 1.25rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logger-stats-bar {
+    padding: 0.75rem 0.5rem;
+  }
+  .logger-stats-val {
+    font-size: 1.1rem;
+  }
+  .logger-stats-label {
+    font-size: 0.6rem;
+  }
+  .logger-sets-head {
+    grid-template-columns: 28px 1.2fr 1.2fr 42px 28px;
+    gap: 0.4rem;
+    font-size: 0.6rem;
+    padding-bottom: 0.35rem;
+  }
+  .logger-set-row {
+    grid-template-columns: 28px 1.2fr 1.2fr 42px 28px;
+    gap: 0.4rem;
+    padding: 0.3rem 0;
+  }
+  .logger-set-input {
+    padding: 0.45rem 0.2rem;
+    font-size: 0.85rem;
+  }
+  .logger-set-check-custom {
+    width: 24px;
+    height: 24px;
+  }
+}
+

@@ -348,3 +348,38 @@
 }
 .wh-empty svg { width: 40px; height: 40px; opacity: 0.4; }
 .wh-empty p { font-size: 0.9rem; }
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 600px) {
+  .wh-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .wh-filter-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .wh-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .wh-search-wrap {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 440px) {
+  .wh-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .wh-summary-card {
+    padding: 1rem;
+  }
+  .wh-summary-value {
+    font-size: 1.5rem;
+  }
+}
+

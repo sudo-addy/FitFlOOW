@@ -500,3 +500,42 @@
 .progress-chart-section {
   margin-bottom: 0;
 }
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 600px) {
+  .progress-header-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .progress-time-selector {
+    align-self: flex-start;
+    margin-top: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .progress-time-selector::-webkit-scrollbar {
+    display: none;
+  }
+  .progress-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .progress-chart-card {
+    padding: 1.25rem 0.75rem 0.75rem;
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .progress-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .progress-measurements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+

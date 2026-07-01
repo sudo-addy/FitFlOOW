@@ -136,7 +136,7 @@
   margin-bottom: 1.75rem;
   overflow-x: auto;
   scrollbar-width: none;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .achieve-recent-strip::-webkit-scrollbar { display: none; }
 
@@ -477,3 +477,36 @@
   color: var(--portal-text-dim);
   line-height: 1.5;
 }
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 600px) {
+  .achieve-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .achieve-filter-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 2px;
+  }
+  .achieve-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .achieve-filter-tab {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .achieve-badge-grid {
+    grid-template-columns: 1fr;
+  }
+  .achieve-badge {
+    padding: 1.25rem 1rem;
+  }
+}
+

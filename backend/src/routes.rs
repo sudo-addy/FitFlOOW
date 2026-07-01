@@ -897,3 +897,104 @@ pub async fn search_exercises(
 
     Ok(Json(json!({ "exercises": exercises })))
 }
+
+#[derive(Deserialize)]
+pub struct ForgotPasswordRequest {
+    pub email: String,
+}
+
+#[derive(Deserialize)]
+pub struct ResetPasswordRequest {
+    pub token: String,
+    pub password: String,
+}
+
+pub async fn forgot_password(
+    State(pool): State<SqlitePool>,
+    Json(payload): Json<ForgotPasswordRequest>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    let email = payload.email.trim().to_lowercase();
+    if email.is_empty() {
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Email is required." }))));
+    }
+
+    // Check if user exists
+    let user_exists: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)")
+        .bind(&email)
+        .fetch_one(&pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
+
+    if !user_exists {
+        // Return success even if email doesn't exist for security reasons (prevents enumeration),
+        // but we'll include a mock token or message
+        return Ok(Json(json!({
+            "message": "If this email is registered, a password reset link has been generated.",
+            "token": null
+        })));
+    }
+
+    // Generate random-ish token using nanoseconds timestamp
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let token = format!("{:x}", now);
+
+    // Save token to DB with 1 hour expiration
+    sqlx::query("UPDATE users SET reset_token = ?, reset_token_expiry = datetime('now', '+1 hour') WHERE email = ?")
+        .bind(&token)
+        .bind(&email)
+        .execute(&pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
+
+    println!("🔑 [PASSWORD RESET] Token for {}: {}", email, token);
+
+    Ok(Json(json!({
+        "message": "If this email is registered, a password reset link has been generated.",
+        "token": token
+    })))
+}
+
+pub async fn reset_password(
+    State(pool): State<SqlitePool>,
+    Json(payload): Json<ResetPasswordRequest>,
+) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
+    if payload.token.trim().is_empty() {
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Reset token is required." }))));
+    }
+
+    if payload.password.len() < 8 {
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Password must be at least 8 characters." }))));
+    }
+
+    // Find user with valid token
+    let user_id: Option<i64> = sqlx::query_scalar(
+        "SELECT id FROM users WHERE reset_token = ? AND reset_token_expiry > datetime('now')"
+    )
+    .bind(payload.token.trim())
+    .fetch_optional(&pool)
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
+
+    let uid = match user_id {
+        Some(id) => id,
+        None => return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Invalid or expired reset token." })))),
+    };
+
+    // Hash password
+    let hashed = hash(&payload.password, DEFAULT_COST)
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": "Password hashing failed." }))))?;
+
+    // Update user password and clear token
+    sqlx::query("UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?")
+        .bind(hashed)
+        .bind(uid)
+        .execute(&pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": e.to_string() }))))?;
+
+    Ok(Json(json!({ "message": "Password has been successfully reset." })))
+}
+

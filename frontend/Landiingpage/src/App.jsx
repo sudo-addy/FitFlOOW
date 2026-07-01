@@ -14,6 +14,8 @@ import SanctumFooter from './components/SanctumFooter'
 // ---- Lazy loaded (portal + auth pages — not needed on first paint) ----
 const LoginPage       = lazy(() => import('./components/LoginPage'))
 const SignUpPage      = lazy(() => import('./components/SignUpPage'))
+const ForgotPasswordPage = lazy(() => import('./components/ForgotPasswordPage'))
+const ResetPasswordPage  = lazy(() => import('./components/ResetPasswordPage'))
 const NotFound        = lazy(() => import('./components/NotFound'))
 
 // Portal pages
@@ -109,6 +111,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* ---- Portal ---- */}
         <Route path="/dashboard" element={<Dashboard />} />

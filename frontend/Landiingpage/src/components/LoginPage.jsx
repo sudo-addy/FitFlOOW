@@ -265,7 +265,7 @@ export default function LoginPage() {
                     />
                     <span className="login-remember-text">Remember Me</span>
                   </label>
-                  <button type="button" className="login-forgot-link">Forgot Password?</button>
+                  <Link to="/forgot-password" className="login-forgot-link">Forgot Password?</Link>
                 </div>
 
                 {errors.form && (

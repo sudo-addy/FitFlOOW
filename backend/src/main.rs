@@ -51,6 +51,8 @@ async fn main() {
         // Auth
         .route("/api/auth/signup", post(routes::sign_up))
         .route("/api/auth/login", post(routes::sign_in))
+        .route("/api/auth/forgot-password", post(routes::forgot_password))
+        .route("/api/auth/reset-password", post(routes::reset_password))
         // Dashboard
         .route("/api/dashboard/stats", get(routes::get_dashboard_stats))
         // Workouts

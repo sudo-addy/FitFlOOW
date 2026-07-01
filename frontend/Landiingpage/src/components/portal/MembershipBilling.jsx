@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { api } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 import './MembershipBilling.css';
 
 export default function MembershipBilling() {
   const [copied, setCopied] = useState(false);
-  const [user, setUser] = useState(api.getUser() || { tier: 'Elite' });
-  const plan = user.tier.toLowerCase();
+  const { user: authUser, updateUser } = useAuth();
+  const user = authUser || { tier: 'Elite' };
+  const plan = (user.tier || 'Elite').toLowerCase();
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText('WARRIOR-X9K2');
@@ -17,8 +19,7 @@ export default function MembershipBilling() {
   const handleTierChange = async (newTier) => {
     try {
       await api.updateTier(newTier);
-      // Reload user object from storage
-      setUser(api.getUser() || { tier: newTier });
+      updateUser({ tier: newTier });
     } catch (err) {
       console.error('Failed to change tier:', err);
     }

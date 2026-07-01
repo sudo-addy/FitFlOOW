@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PortalLayout from './PortalLayout';
 import { api } from '../../utils/api';
 import './WorkoutLogger.css';
+import { useToast } from '../../context/ToastContext';
 
 /* ── Preset Templates ── */
 const TEMPLATES = {
@@ -78,6 +79,7 @@ function formatTime(s) {
 
 /* ── Component ── */
 export default function WorkoutLogger() {
+  const { showToast } = useToast();
   const [sessionName, setSessionName] = useState('');
   const [template, setTemplate] = useState('Custom');
   const [exercises, setExercises] = useState([]);
@@ -132,6 +134,7 @@ export default function WorkoutLogger() {
     if (tpl.length > 0) {
       setExercises(tpl.map((ex) => ({ ...ex, sets: ex.sets.map((s) => ({ ...s })) })));
       setSessionName(t + ' Session');
+      showToast(`Loaded template: ${t}`, 'info');
     } else {
       setExercises([]);
       setSessionName('');
@@ -139,18 +142,26 @@ export default function WorkoutLogger() {
   };
 
   /* Start session */
-  const startSession = () => setSessionStarted(true);
+  const startSession = () => {
+    setSessionStarted(true);
+    showToast('Timer started! Go crush it!', 'info');
+  };
 
   /* Add exercise */
   const addExercise = () => {
     if (!addExName.trim()) return;
     setExercises((prev) => [...prev, newExercise(addExName.trim(), addMusclGroup, selectedSteps)]);
+    showToast(`Added exercise: ${addExName.trim()}`, 'success');
     setAddExName('');
     setSelectedSteps([]);
   };
 
   /* Remove exercise */
-  const removeExercise = (idx) => setExercises((prev) => prev.filter((_, i) => i !== idx));
+  const removeExercise = (idx) => {
+    const ex = exercises[idx];
+    setExercises((prev) => prev.filter((_, i) => i !== idx));
+    showToast(`Removed exercise: ${ex?.name}`, 'info');
+  };
 
   /* Add set to exercise */
   const addSet = (exIdx) => {
@@ -184,7 +195,10 @@ export default function WorkoutLogger() {
   };
 
   /* Finish session */
-  const finishSession = () => setFinished(true);
+  const finishSession = () => {
+    setFinished(true);
+    showToast(`⚡ Workout logged successfully! +${totalVolume.toLocaleString()} kg total volume`, 'success');
+  };
 
   if (finished) {
     return (

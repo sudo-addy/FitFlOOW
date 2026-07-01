@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../utils/api';
+import { useToast } from '../context/ToastContext';
 import './LoginPage.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { showToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,15 +41,17 @@ export default function LoginPage() {
     setErrors({});
     setIsLoading(true);
     try {
-      await api.login(email, password);
+      const data = await api.login(email, password);
       setIsLoading(false);
       setSubmitSuccess(true);
+      showToast(`Welcome back, ${data.user?.name || 'Warrior'}!`, 'success');
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (error) {
       setIsLoading(false);
       setErrors({ form: error.message || 'Authentication failed.' });
+      showToast(error.message || 'Authentication failed.', 'error');
     }
   };
 

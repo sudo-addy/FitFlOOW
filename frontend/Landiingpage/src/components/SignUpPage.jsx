@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
+import { useToast } from '../context/ToastContext';
 import './LoginPage.css';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -45,15 +47,17 @@ export default function SignUpPage() {
     setErrors({});
     setIsLoading(true);
     try {
-      await api.signup(name.trim(), email.trim(), password);
+      const data = await api.signup(name.trim(), email.trim(), password);
       setIsLoading(false);
       setSubmitSuccess(true);
+      showToast(`Welcome, ${data.user?.name || 'Warrior'}! Profile created.`, 'success');
       setTimeout(() => {
         navigate('/dashboard');
       }, 1000);
     } catch (error) {
       setIsLoading(false);
       setErrors({ form: error.message || 'Registration failed.' });
+      showToast(error.message || 'Registration failed.', 'error');
     }
   };
 

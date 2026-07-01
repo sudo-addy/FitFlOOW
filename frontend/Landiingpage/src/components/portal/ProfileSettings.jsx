@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PortalLayout from './PortalLayout';
+import { useToast } from '../../context/ToastContext';
 import './ProfileSettings.css';
 
 export default function ProfileSettings() {
@@ -37,12 +38,22 @@ export default function ProfileSettings() {
     twoFA: true,
   });
 
+  const { showToast } = useToast();
+
   /* ---- Save feedback states ---- */
   const [saved, setSaved] = useState({ personal: false, fitness: false, prefs: false, security: false });
 
   const handleSave = (section) => {
     setSaved((prev) => ({ ...prev, [section]: true }));
     setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
+
+    const labels = {
+      personal: 'Personal info',
+      fitness: 'Fitness profile',
+      prefs: 'Preferences',
+      security: 'Security configuration'
+    };
+    showToast(`${labels[section] || 'Settings'} updated successfully!`, 'success');
   };
 
   /* ---- Avatar upload simulation ---- */

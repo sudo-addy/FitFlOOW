@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PortalLayout from './PortalLayout';
+import { useToast } from '../../context/ToastContext';
 import './ClassesBooking.css';
 
 const DAYS = [
@@ -290,16 +291,30 @@ const INTENSITY_CONFIG = {
 };
 
 export default function ClassesBooking() {
+  const { showToast } = useToast();
   const [activeDay, setActiveDay] = useState(TODAY_KEY);
   const [bookedIds, setBookedIds] = useState(new Set(['cls-002', 'cls-007']));
   const [filter, setFilter] = useState('all');
 
   const toggleBook = (id, isFull) => {
-    if (isFull && !bookedIds.has(id)) return;
+    const allCls = Object.values(CLASS_DATA).flat();
+    const targetClass = allCls.find(c => c.id === id);
+    const className = targetClass ? targetClass.name : 'Class';
+
+    if (isFull && !bookedIds.has(id)) {
+      showToast('Class is full! Try another chamber.', 'error');
+      return;
+    }
+
     setBookedIds(prev => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+        showToast(`Cancelled booking for: ${className}`, 'info');
+      } else {
+        next.add(id);
+        showToast(`Successfully booked: ${className}!`, 'success');
+      }
       return next;
     });
   };

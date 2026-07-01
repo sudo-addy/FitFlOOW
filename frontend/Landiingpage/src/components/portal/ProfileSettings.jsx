@@ -1,14 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { useToast } from '../../context/ToastContext';
+import { api } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 import './ProfileSettings.css';
 
 export default function ProfileSettings() {
+  const { updateUser } = useAuth();
+
   /* ---- Personal Info ---- */
   const [personal, setPersonal] = useState({
-    firstName: 'Arjun',
-    lastName: 'Varma',
-    email: 'arjun.varma@saiyanfit.com',
+    firstName: '',
+    lastName: '',
+    email: '',
     dob: '1997-03-15',
     phone: '+91 98765 43210',
   });
@@ -43,22 +47,66 @@ export default function ProfileSettings() {
   /* ---- Save feedback states ---- */
   const [saved, setSaved] = useState({ personal: false, fitness: false, prefs: false, security: false });
 
-  const handleSave = (section) => {
-    setSaved((prev) => ({ ...prev, [section]: true }));
-    setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
-
-    const labels = {
-      personal: 'Personal info',
-      fitness: 'Fitness profile',
-      prefs: 'Preferences',
-      security: 'Security configuration'
+  useEffect(() => {
+    document.title = 'Profile | FitFlOOW';
+    api.getProfile()
+      .then((res) => {
+        if (res.user) {
+          const names = (res.user.name || '').split(' ');
+          const firstName = names[0] || '';
+          const lastName = names.slice(1).join(' ') || '';
+          setPersonal({
+            firstName,
+            lastName,
+            email: res.user.email || '',
+            dob: '1997-03-15',
+            phone: '+91 98765 43210'
+          });
+        }
+        if (res.profile) {
+          setFitness({
+            height: res.profile.height?.toString() || '183',
+            weight: res.profile.weight?.toString() || '82.4',
+            goal: res.profile.goal || 'Strength',
+            experience: res.profile.experience || 'Intermediate'
+          });
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch profile', err);
+      });
+    return () => {
+      document.title = 'Saiyan Gym';
     };
-    showToast(`${labels[section] || 'Settings'} updated successfully!`, 'success');
+  }, []);
+
+  const handleSave = async (section) => {
+    if (section === 'personal') {
+      try {
+        const fullName = `${personal.firstName} ${personal.lastName}`.trim();
+        await api.updateProfile(fullName);
+        updateUser({ name: fullName });
+        setSaved((prev) => ({ ...prev, [section]: true }));
+        setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
+        showToast('Personal info updated successfully!', 'success');
+      } catch (error) {
+        showToast(error.message || 'Failed to update personal info.', 'error');
+      }
+    } else {
+      setSaved((prev) => ({ ...prev, [section]: true }));
+      setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
+      const labels = {
+        fitness: 'Fitness profile',
+        prefs: 'Preferences',
+        security: 'Security configuration'
+      };
+      showToast(`${labels[section] || 'Settings'} updated successfully!`, 'success');
+    }
   };
 
   /* ---- Avatar upload simulation ---- */
   const fileInputRef = useRef(null);
-  const [avatarInitials] = useState('W');
+  const avatarInitials = personal.firstName ? personal.firstName[0].toUpperCase() : 'W';
 
   return (
     <PortalLayout>

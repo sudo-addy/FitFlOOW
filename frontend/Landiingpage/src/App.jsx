@@ -1,9 +1,17 @@
 import React, { lazy, Suspense, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import './App.css'
 import ErrorBoundary from './components/ErrorBoundary'
 import { ToastProvider } from './context/ToastContext'
+import { AuthProvider } from './context/AuthContext'
+
+// ---- Route guard — redirects to /login if no token ----
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem('token');
+  if (!token) return <Navigate to="/login" replace />;
+  return children;
+}
 
 // ---- Eagerly loaded (landing page is the entry point) ----
 import Hero from './components/Hero'
@@ -108,32 +116,34 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* ---- Public ---- */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <AuthProvider>
+        <ToastProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* ---- Public ---- */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-            {/* ---- Portal ---- */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/workouts" element={<WorkoutsHistory />} />
-            <Route path="/workouts/log" element={<WorkoutLogger />} />
-            <Route path="/classes" element={<ClassesBooking />} />
-            <Route path="/progress" element={<ProgressAnalytics />} />
-            <Route path="/nutrition" element={<NutritionTracker />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/profile" element={<ProfileSettings />} />
-            <Route path="/membership" element={<MembershipBilling />} />
+              {/* ---- Portal (protected) ---- */}
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/workouts" element={<ProtectedRoute><WorkoutsHistory /></ProtectedRoute>} />
+              <Route path="/workouts/log" element={<ProtectedRoute><WorkoutLogger /></ProtectedRoute>} />
+              <Route path="/classes" element={<ProtectedRoute><ClassesBooking /></ProtectedRoute>} />
+              <Route path="/progress" element={<ProtectedRoute><ProgressAnalytics /></ProtectedRoute>} />
+              <Route path="/nutrition" element={<ProtectedRoute><NutritionTracker /></ProtectedRoute>} />
+              <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+              <Route path="/membership" element={<ProtectedRoute><MembershipBilling /></ProtectedRoute>} />
 
-            {/* ---- 404 catch-all ---- */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </ToastProvider>
+              {/* ---- 404 catch-all ---- */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ToastProvider>
+      </AuthProvider>
     </ErrorBoundary>
   )
 }

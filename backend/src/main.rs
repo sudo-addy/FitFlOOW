@@ -5,6 +5,7 @@ use axum::{
 };
 use std::net::SocketAddr;
 use tower_http::cors::{CorsLayer, Any};
+use tower_http::compression::CompressionLayer;
 use dotenvy::dotenv;
 use std::env;
 
@@ -75,7 +76,8 @@ async fn main() {
         // Health check
         .route("/health", get(health_check))
         .with_state(pool)
-        .layer(cors);
+        .layer(cors)
+        .layer(CompressionLayer::new());
 
     let port = env::var("PORT").unwrap_or_else(|_| "5005".to_string());
     let addr: SocketAddr = format!("0.0.0.0:{}", port)

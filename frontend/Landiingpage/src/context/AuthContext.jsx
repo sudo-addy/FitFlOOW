@@ -35,6 +35,12 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const signup = async (name, email, password) => {
+    const data = await api.signup(name, email, password);
+    setUser(data.user);
+    return data;
+  };
+
   const logout = () => {
     api.logout();
     setUser(null);
@@ -56,6 +62,7 @@ export function AuthProvider({ children }) {
         isSidebarCollapsed,
         toggleSidebar,
         login,
+        signup,
         logout,
         updateUser,
         isAuthenticated: !!user,

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
-import BackgroundCanvas from './BackgroundCanvas';
 import './Hero.css';
+
+const BackgroundCanvas = lazy(() => import('./BackgroundCanvas'));
 
 export default function Hero() {
   const [activeSection, setActiveSection] = useState('home');
@@ -72,7 +73,9 @@ export default function Hero() {
       />
 
       {/* 2. Floating Amber Particles (z-index: 40) */}
-      <BackgroundCanvas />
+      <Suspense fallback={null}>
+        <BackgroundCanvas />
+      </Suspense>
 
       {/* 3. Top Fixed Navigation overlay (z-index: 100) */}
       <nav className={`fixed-navbar ${scrolled ? 'fixed-navbar--scrolled' : ''}`} aria-label="Main navigation">

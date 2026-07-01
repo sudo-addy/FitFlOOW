@@ -43,6 +43,7 @@ export default function Dashboard() {
   const [hoveredRow, setHoveredRow] = useState(null);
 
   useEffect(() => {
+    document.title = 'Dashboard | FitFlOOW';
     api.getDashboard()
       .then((res) => {
         setData(res);
@@ -52,6 +53,9 @@ export default function Dashboard() {
         console.error(err);
         setLoading(false);
       });
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
   }, []);
 
   const calories = useCountUp(data.stats.caloriesBurned, 1500, 100);

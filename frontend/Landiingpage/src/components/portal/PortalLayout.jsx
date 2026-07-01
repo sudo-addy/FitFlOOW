@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 import './PortalLayout.css';
 
 const navItems = [
@@ -98,17 +99,11 @@ export default function PortalLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const user = api.getUser() || { name: 'Warrior', tier: 'Elite' };
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    }
-  }, [navigate]);
+  const { user: authUser, logout } = useAuth();
+  const user = authUser || { name: 'Warrior', tier: 'Elite' };
 
   const handleLogout = () => {
-    api.logout();
+    logout();
     navigate('/login');
   };
 

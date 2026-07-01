@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { api } from '../utils/api';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
 import './LoginPage.css';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { showToast } = useToast();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +42,7 @@ export default function LoginPage() {
     setErrors({});
     setIsLoading(true);
     try {
-      const data = await api.login(email, password);
+      const data = await login(email, password);
       setIsLoading(false);
       setSubmitSuccess(true);
       showToast(`Welcome back, ${data.user?.name || 'Warrior'}!`, 'success');

@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import './App.css'
+import ErrorBoundary from './components/ErrorBoundary'
 
 // ---- Eagerly loaded (landing page is the entry point) ----
 import Hero from './components/Hero'
@@ -105,30 +106,32 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        {/* ---- Public ---- */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+    <ErrorBoundary>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* ---- Public ---- */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-        {/* ---- Portal ---- */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/workouts" element={<WorkoutsHistory />} />
-        <Route path="/workouts/log" element={<WorkoutLogger />} />
-        <Route path="/classes" element={<ClassesBooking />} />
-        <Route path="/progress" element={<ProgressAnalytics />} />
-        <Route path="/nutrition" element={<NutritionTracker />} />
-        <Route path="/achievements" element={<Achievements />} />
-        <Route path="/profile" element={<ProfileSettings />} />
-        <Route path="/membership" element={<MembershipBilling />} />
+          {/* ---- Portal ---- */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/workouts" element={<WorkoutsHistory />} />
+          <Route path="/workouts/log" element={<WorkoutLogger />} />
+          <Route path="/classes" element={<ClassesBooking />} />
+          <Route path="/progress" element={<ProgressAnalytics />} />
+          <Route path="/nutrition" element={<NutritionTracker />} />
+          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/profile" element={<ProfileSettings />} />
+          <Route path="/membership" element={<MembershipBilling />} />
 
-        {/* ---- 404 catch-all ---- */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
+          {/* ---- 404 catch-all ---- */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   )
 }
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PortalLayout from './PortalLayout';
 import { api } from '../../utils/api';
 import './Dashboard.css';
+import SkeletonLoader from './SkeletonLoader';
 
 /* ── Animated number hook ─────────────────────────────────── */
 function useCountUp(target, duration = 1500, delay = 0) {
@@ -61,9 +62,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <PortalLayout>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'rgba(255,255,255,0.4)', fontFamily: 'Outfit' }}>
-          LOADING COMMAND CENTER...
-        </div>
+        <SkeletonLoader type="dashboard" />
       </PortalLayout>
     );
   }

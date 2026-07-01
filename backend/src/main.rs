@@ -26,7 +26,10 @@ async fn main() {
 
     // CORS configuration — restrict in production via CORS_ORIGIN env var
     let cors = match env::var("CORS_ORIGIN") {
-        Ok(origin) => {
+        Ok(mut origin) => {
+            if origin.ends_with('/') {
+                origin.pop();
+            }
             println!("CORS: restricting to origin {}", origin);
             CorsLayer::new()
                 .allow_origin(origin.parse::<http::HeaderValue>().expect("Invalid CORS_ORIGIN value"))

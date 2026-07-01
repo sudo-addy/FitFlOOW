@@ -187,6 +187,7 @@ export default function WorkoutsHistory() {
   const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
+    document.title = 'Workouts | FitFlOOW';
     api.getWorkouts()
       .then((res) => {
         const mapped = res.map((w) => {

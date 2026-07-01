@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { useToast } from '../../context/ToastContext';
 import './Achievements.css';
@@ -271,6 +271,13 @@ export default function Achievements() {
   const { showToast } = useToast();
   const [activeFilter, setActiveFilter] = useState('All');
   const [hoveredLocked, setHoveredLocked] = useState(null);
+
+  useEffect(() => {
+    document.title = 'Achievements | FitFlOOW';
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
+  }, []);
 
   const totalAchievements = categories.reduce((sum, c) => sum + c.achievements.length, 0);
   const unlockedCount = categories.reduce(

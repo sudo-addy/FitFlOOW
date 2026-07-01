@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import './ProgressAnalytics.css';
 
@@ -104,6 +104,13 @@ const MAX_VOL = Math.max(...VOLUME_DATA.map(d => d.kg));
 
 export default function ProgressAnalytics() {
   const [timeRange, setTimeRange] = useState('3M');
+
+  useEffect(() => {
+    document.title = 'Analytics | FitFlOOW';
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
+  }, []);
 
   return (
     <PortalLayout>

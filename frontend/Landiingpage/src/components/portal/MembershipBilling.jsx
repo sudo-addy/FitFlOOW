@@ -10,6 +10,13 @@ export default function MembershipBilling() {
   const user = authUser || { tier: 'Elite' };
   const plan = (user.tier || 'Elite').toLowerCase();
 
+  useEffect(() => {
+    document.title = 'Membership | FitFlOOW';
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
+  }, []);
+
   const handleCopyCode = () => {
     navigator.clipboard.writeText('WARRIOR-X9K2');
     setCopied(true);

@@ -105,6 +105,7 @@ export default function WorkoutLogger() {
 
   // Fetch custom templates on mount
   useEffect(() => {
+    document.title = 'Log Workout | FitFlOOW';
     api.getTemplates()
       .then((res) => {
         setCustomTemplates(res || []);

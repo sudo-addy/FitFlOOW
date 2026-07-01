@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { useToast } from '../../context/ToastContext';
 import './ClassesBooking.css';
@@ -295,6 +295,13 @@ export default function ClassesBooking() {
   const [activeDay, setActiveDay] = useState(TODAY_KEY);
   const [bookedIds, setBookedIds] = useState(new Set(['cls-002', 'cls-007']));
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    document.title = 'Book Classes | FitFlOOW';
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
+  }, []);
 
   const toggleBook = (id, isFull) => {
     const allCls = Object.values(CLASS_DATA).flat();

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import './NutritionTracker.css';
 
@@ -134,6 +134,13 @@ const MAX_WEEK_CAL = Math.max(...WEEKLY_SUMMARY.map(d => d.calories));
 
 export default function NutritionTracker() {
   const [meals, setMeals] = useState(INITIAL_MEALS);
+
+  useEffect(() => {
+    document.title = 'Nutrition | FitFlOOW';
+    return () => {
+      document.title = 'Saiyan Gym';
+    };
+  }, []);
   const [waterCups, setWaterCups] = useState(5);
   const [showAddForm, setShowAddForm] = useState(false);
   const [expandedMeal, setExpandedMeal] = useState(null);

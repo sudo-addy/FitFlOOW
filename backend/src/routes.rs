@@ -126,6 +126,10 @@ pub async fn sign_up(
         return Err((StatusCode::BAD_REQUEST, "Name, email, and password are required.".to_string()));
     }
 
+    if payload.password.len() < 8 {
+        return Err((StatusCode::BAD_REQUEST, "Password must be at least 8 characters.".to_string()));
+    }
+
     // Check if email already exists
     let exists: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)")
         .bind(&payload.email)

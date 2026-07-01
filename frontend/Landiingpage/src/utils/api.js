@@ -8,6 +8,26 @@ const getHeaders = () => {
   };
 };
 
+// Global request helper — auto-handles 401 expired tokens
+const request = async (url, options = {}) => {
+  const res = await fetch(url, {
+    ...options,
+    headers: { ...getHeaders(), ...options.headers },
+  });
+
+  if (res.status === 401) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Only redirect if we're not already on the login/signup page
+    if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
+      window.location.href = '/login';
+    }
+    throw new Error('Session expired. Please log in again.');
+  }
+
+  return res;
+};
+
 export const api = {
   // Auth
   login: async (email, password) => {
@@ -48,22 +68,21 @@ export const api = {
 
   // Dashboard
   getDashboard: async () => {
-    const res = await fetch(`${API_BASE}/dashboard/stats`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/dashboard/stats`);
     if (!res.ok) throw new Error('Failed to load dashboard statistics.');
     return res.json();
   },
 
   // Workouts
   getWorkouts: async () => {
-    const res = await fetch(`${API_BASE}/workouts`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/workouts`);
     if (!res.ok) throw new Error('Failed to load workouts battle log.');
     return res.json();
   },
 
   logWorkout: async (workoutData) => {
-    const res = await fetch(`${API_BASE}/workouts`, {
+    const res = await request(`${API_BASE}/workouts`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify(workoutData),
     });
     const data = await res.json();
@@ -73,15 +92,14 @@ export const api = {
 
   // Classes
   getBookings: async () => {
-    const res = await fetch(`${API_BASE}/classes`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/classes`);
     if (!res.ok) throw new Error('Failed to load class bookings.');
     return res.json();
   },
 
   bookClass: async (classData) => {
-    const res = await fetch(`${API_BASE}/classes/book`, {
+    const res = await request(`${API_BASE}/classes/book`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify(classData),
     });
     const data = await res.json();
@@ -90,9 +108,8 @@ export const api = {
   },
 
   cancelBooking: async (bookingId) => {
-    const res = await fetch(`${API_BASE}/classes/cancel/${bookingId}`, {
+    const res = await request(`${API_BASE}/classes/cancel/${bookingId}`, {
       method: 'DELETE',
-      headers: getHeaders(),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to cancel class booking.');
@@ -101,15 +118,14 @@ export const api = {
 
   // Nutrition
   getNutrition: async () => {
-    const res = await fetch(`${API_BASE}/nutrition`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/nutrition`);
     if (!res.ok) throw new Error('Failed to load nutrition log.');
     return res.json();
   },
 
   updateWater: async (cups) => {
-    const res = await fetch(`${API_BASE}/nutrition/water`, {
+    const res = await request(`${API_BASE}/nutrition/water`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify({ cups }),
     });
     const data = await res.json();
@@ -118,9 +134,8 @@ export const api = {
   },
 
   logMeal: async (mealData) => {
-    const res = await fetch(`${API_BASE}/nutrition/meal`, {
+    const res = await request(`${API_BASE}/nutrition/meal`, {
       method: 'POST',
-      headers: getHeaders(),
       body: JSON.stringify(mealData),
     });
     const data = await res.json();
@@ -130,15 +145,14 @@ export const api = {
 
   // Profile & Achievements
   getProfile: async () => {
-    const res = await fetch(`${API_BASE}/profile`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/profile`);
     if (!res.ok) throw new Error('Failed to load profile.');
     return res.json();
   },
 
   updateProfile: async (name) => {
-    const res = await fetch(`${API_BASE}/profile`, {
+    const res = await request(`${API_BASE}/profile`, {
       method: 'PUT',
-      headers: getHeaders(),
       body: JSON.stringify({ name }),
     });
     const data = await res.json();
@@ -147,9 +161,8 @@ export const api = {
   },
 
   updateTier: async (tier) => {
-    const res = await fetch(`${API_BASE}/profile/tier`, {
+    const res = await request(`${API_BASE}/profile/tier`, {
       method: 'PUT',
-      headers: getHeaders(),
       body: JSON.stringify({ tier }),
     });
     const data = await res.json();
@@ -164,13 +177,13 @@ export const api = {
   },
 
   getAchievements: async () => {
-    const res = await fetch(`${API_BASE}/achievements`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/achievements`);
     if (!res.ok) throw new Error('Failed to load achievements.');
     return res.json();
   },
 
   searchExercises: async (query) => {
-    const res = await fetch(`${API_BASE}/exercises/search?q=${encodeURIComponent(query)}`, { headers: getHeaders() });
+    const res = await request(`${API_BASE}/exercises/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error('Failed to search exercises.');
     return res.json();
   },

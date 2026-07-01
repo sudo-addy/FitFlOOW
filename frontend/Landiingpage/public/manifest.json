@@ -1,0 +1,30 @@
+{
+  "name": "FitFlOOW Fitness Portal",
+  "short_name": "FitFlOOW",
+  "description": "The Ultimate Saiyan-Tier Fitness Portal. Track workouts, achievements, and nutrition.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0503",
+  "theme_color": "#ff5500",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+}

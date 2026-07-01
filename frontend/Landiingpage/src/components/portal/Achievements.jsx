@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PortalLayout from './PortalLayout';
+import { useToast } from '../../context/ToastContext';
 import './Achievements.css';
 
 const recentAchievements = [
@@ -267,6 +268,7 @@ const categories = [
 const FILTERS = ['All', 'Unlocked', 'Locked'];
 
 export default function Achievements() {
+  const { showToast } = useToast();
   const [activeFilter, setActiveFilter] = useState('All');
   const [hoveredLocked, setHoveredLocked] = useState(null);
 
@@ -281,6 +283,153 @@ export default function Achievements() {
     if (activeFilter === 'Unlocked') return achievements.filter((a) => a.unlocked);
     if (activeFilter === 'Locked') return achievements.filter((a) => !a.unlocked);
     return achievements;
+  };
+
+  const getAchievementEmoji = (id) => {
+    const emojiMap = {
+      a1: '😈', // Deadlift Demon
+      a2: '🏋️‍♂️', // Triple Plate
+      a3: '💪', // Bench God
+      a4: '👑', // Overhead King
+      b1: '🔥', // Iron Will
+      b2: '💯', // Centurion
+      b3: '🌅', // Dawn Warrior
+      b4: '🌟', // Saiyan God
+      c1: '🏃‍♂️', // Marathon Soul
+      c2: '🫁', // Iron Lungs
+      c3: '🏆', // Legendary Status
+      c4: '⚡', // Sub-4 Mile
+      d1: '🥩', // Protein King
+      d2: '📋', // Calorie Commander
+      d3: '💧', // Hydration Monk
+      d4: '🔪', // Shredded Season
+    };
+    return emojiMap[id] || '🏆';
+  };
+
+  const shareAchievement = (ach) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 600;
+    const ctx = canvas.getContext('2d');
+
+    // 1. Background gradient
+    const grad = ctx.createRadialGradient(400, 300, 50, 400, 300, 500);
+    grad.addColorStop(0, '#1c0f0a');
+    grad.addColorStop(1, '#080403');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 800, 600);
+
+    // 2. Neon orange/gold double border
+    ctx.strokeStyle = '#ff5500';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(15, 15, 770, 570);
+
+    ctx.strokeStyle = '#ffaa00';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(25, 25, 750, 550);
+
+    // 3. Grid design / cyber lines pattern
+    ctx.strokeStyle = 'rgba(255, 85, 0, 0.04)';
+    ctx.lineWidth = 1;
+    for (let i = 40; i < 760; i += 40) {
+      ctx.beginPath();
+      ctx.moveTo(i, 40);
+      ctx.lineTo(i, 560);
+      ctx.stroke();
+    }
+    for (let j = 40; j < 560; j += 40) {
+      ctx.beginPath();
+      ctx.moveTo(40, j);
+      ctx.lineTo(760, j);
+      ctx.stroke();
+    }
+
+    // 4. Header branding
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡ FITFLOOOW COMMAND CENTER ⚡', 400, 70);
+
+    // 5. Title
+    ctx.fillStyle = '#ffaa00';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('WARRIOR TITLE UNLOCKED', 400, 115);
+
+    // 6. Glowing badge circle
+    ctx.beginPath();
+    ctx.arc(400, 240, 75, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 85, 0, 0.1)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 170, 0, 0.4)';
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // 7. Icon drawing
+    ctx.font = '72px Arial';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(getAchievementEmoji(ach.id), 400, 240);
+
+    // 8. Achievement Name
+    ctx.font = 'bold 36px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(ach.name.toUpperCase(), 400, 375);
+
+    // 9. Achievement Description
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.fillText(ach.description, 400, 415);
+
+    // 10. Flavor text
+    if (ach.flavor) {
+      ctx.font = 'italic 16px Georgia, serif';
+      ctx.fillStyle = '#ffaa00';
+      ctx.fillText(`"${ach.flavor}"`, 400, 460);
+    }
+
+    // 11. Footer date & motivational line
+    ctx.fillStyle = '#4ade80';
+    ctx.font = 'bold 14px monospace';
+    ctx.fillText(`PROVEN IN IRON ON: ${ach.date || 'TODAY'}`, 400, 515);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.font = 'italic 12px sans-serif';
+    ctx.fillText('OWN EVERY REP. CONQUER EVERY DAY.', 400, 545);
+
+    const dataUrl = canvas.toDataURL('image/png');
+
+    // Trigger Native Share or Fallback Download
+    if (navigator.share) {
+      fetch(dataUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], 'achievement.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({
+              files: [file],
+              title: `Warrior Title: ${ach.name}`,
+              text: `I just unlocked the "${ach.name}" warrior title on FitFlOOW! ⚡`,
+            }).catch((err) => {
+              console.error('Error sharing:', err);
+              downloadFallback(dataUrl, ach.name);
+            });
+          } else {
+            downloadFallback(dataUrl, ach.name);
+          }
+        })
+        .catch(() => downloadFallback(dataUrl, ach.name));
+    } else {
+      downloadFallback(dataUrl, ach.name);
+    }
+  };
+
+  const downloadFallback = (dataUrl, name) => {
+    const link = document.createElement('a');
+    link.download = `fitfloow-${name.toLowerCase().replace(/\s+/g, '-')}.png`;
+    link.href = dataUrl;
+    link.click();
+    showToast('Achievement card downloaded! Share it on your socials.', 'success');
   };
 
   return (
@@ -419,15 +568,28 @@ export default function Achievements() {
                       <h3 className="achieve-badge-name">{ach.name}</h3>
                       <p className="achieve-badge-desc">{ach.description}</p>
                       {ach.unlocked ? (
-                        <span className="achieve-badge-date">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                          </svg>
-                          {ach.date}
-                        </span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          <span className="achieve-badge-date">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                              <line x1="16" y1="2" x2="16" y2="6" />
+                              <line x1="8" y1="2" x2="8" y2="6" />
+                              <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            {ach.date}
+                          </span>
+                          <button
+                            className="achieve-badge-share-btn"
+                            onClick={() => shareAchievement(ach)}
+                            title="Share Achievement Card"
+                            aria-label={`Share ${ach.name} achievement`}
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" width="12" height="12">
+                              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>
+                            </svg>
+                            Share
+                          </button>
+                        </div>
                       ) : (
                         <span className="achieve-badge-locked-label">???</span>
                       )}

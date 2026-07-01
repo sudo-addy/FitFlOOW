@@ -510,3 +510,27 @@
   }
 }
 
+.achieve-badge-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  background: rgba(255, 85, 0, 0.08);
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  border-radius: 6px;
+  color: var(--portal-accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.achieve-badge-share-btn:hover {
+  background: rgba(255, 85, 0, 0.18);
+  border-color: rgba(255, 85, 0, 0.55);
+  color: #fff;
+}
+.achieve-badge-share-btn svg {
+  color: inherit;
+}
+

@@ -6,8 +6,9 @@ use axum::{
 use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 use tower_http::compression::CompressionLayer;
-use dotenvy::dotenv;
 use std::env;
+use std::sync::Arc;
+use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
 
 mod db;
 mod middleware;
@@ -15,12 +16,9 @@ mod routes;
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
+    dotenvy::dotenv().ok();
 
-    let jwt_secret = env::var("JWT_SECRET").unwrap_or_default();
-    if jwt_secret.is_empty() || jwt_secret == "super_secret_saiyan_key_1337_force" {
-        println!("⚠️  [WARNING]: JWT_SECRET is empty or using the default insecure fallback. Please set a secure value in production.");
-    }
+    let _ = env::var("JWT_SECRET").expect("FATAL: JWT_SECRET env var is not set");
 
     // Initialize database pool & seed if empty
     let pool = db::init_db().await;
@@ -58,12 +56,18 @@ async fn main() {
             http::header::CONTENT_TYPE,
         ]);
 
+    let governor_conf = GovernorConfigBuilder::default()
+        .per_second(12)
+        .burst_size(5)
+        .finish()
+        .unwrap();
+
     let auth_routes = Router::new()
         .route("/signup", post(routes::sign_up))
         .route("/login", post(routes::sign_in))
         .route("/forgot-password", post(routes::forgot_password))
         .route("/reset-password", post(routes::reset_password))
-        .layer(axum::middleware::from_fn(middleware::rate_limit));
+        .layer(GovernorLayer { config: Arc::new(governor_conf) });
 
     // Router mapping
     let app = Router::new()

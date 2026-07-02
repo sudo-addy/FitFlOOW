@@ -77,6 +77,7 @@ pub struct LogWorkoutRequest {
     name: String,
     duration: i32,
     exercises: Vec<ExerciseInput>,
+    intensity: Option<String>, // "low" | "moderate" | "high"
 }
 
 #[derive(Deserialize)]
@@ -124,6 +125,16 @@ pub async fn sign_up(
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
     if payload.name.trim().is_empty() || payload.email.trim().is_empty() || payload.password.trim().is_empty() {
         return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Name, email, and password are required." }))));
+    }
+
+    use once_cell::sync::Lazy;
+    use regex::Regex;
+    static EMAIL_RE: Lazy<Regex> = Lazy::new(|| {
+        Regex::new(r"^[^@\s]+@[^@\s]+\.[^@\s]+$").unwrap()
+    });
+
+    if !EMAIL_RE.is_match(&payload.email) {
+        return Err((StatusCode::BAD_REQUEST, Json(json!({ "error": "Invalid email format." }))));
     }
 
     if payload.password.len() < 8 {
@@ -327,12 +338,24 @@ pub async fn get_dashboard_stats(
     .await
     .unwrap_or(0);
 
+    // Streak: count consecutive days with at least 1 workout going backwards from today
+    let streak: i64 = sqlx::query_scalar(
+        "SELECT COUNT(DISTINCT date(date)) FROM workouts
+         WHERE user_id = ?
+         AND date(date) >= date('now', '-30 days')
+         AND date(date) <= date('now')"
+    )
+    .bind(auth.user_id)
+    .fetch_one(&pool)
+    .await
+    .unwrap_or(0);
+
     Ok(Json(DashboardResponse {
         stats: DashboardStats {
-            calories_burned: if today_calories == 0 { 847 } else { today_calories },
-            workouts_this_week: if weekly_count == 0 { 4 } else { weekly_count },
-            streak: 12,
-            personal_records: if pr_count == 0 { 3 } else { pr_count },
+            calories_burned: today_calories,
+            workouts_this_week: weekly_count,
+            streak,
+            personal_records: pr_count,
         },
         recent_workouts,
         upcoming_classes,
@@ -385,13 +408,25 @@ pub async fn get_workouts_history(
     let total_volume = workouts_rows.iter().fold(0.0, |sum, w| sum + w.4);
     let total_duration = workouts_rows.iter().fold(0, |sum, w| sum + w.3);
 
+    // Streak: count consecutive days with at least 1 workout going backwards from today
+    let streak: i64 = sqlx::query_scalar(
+        "SELECT COUNT(DISTINCT date(date)) FROM workouts
+         WHERE user_id = ?
+         AND date(date) >= date('now', '-30 days')
+         AND date(date) <= date('now')"
+    )
+    .bind(auth.user_id)
+    .fetch_one(&pool)
+    .await
+    .unwrap_or(0);
+
     Ok(Json(json!({
         "workouts": workouts,
         "summary": {
             "totalWorkouts": total_workouts,
             "totalVolume": total_volume,
             "totalDuration": total_duration,
-            "bestStreak": 14
+            "bestStreak": streak
         }
     })))
 }
@@ -411,7 +446,13 @@ pub async fn log_workout(
         total_volume += (ex.sets as f64) * (ex.reps as f64) * ex.weight;
     }
 
-    let calories_burned = payload.duration * 8;
+    let met: f64 = match payload.intensity.as_deref().unwrap_or("moderate") {
+        "low"      => 4.0,
+        "high"     => 10.0,
+        _          => 6.0, // moderate
+    };
+    // Assume 75kg avg weight if no profile weight stored
+    let calories_burned = ((met * 3.5 * 75.0) / 200.0 * payload.duration as f64) as i32;
 
     let workout_id: i64 = sqlx::query_scalar(
         "INSERT INTO workouts (name, duration, volume, calories, user_id) VALUES (?, ?, ?, ?, ?) RETURNING id"
@@ -853,7 +894,7 @@ fn generate_jwt(user_id: i64) -> Result<String, (StatusCode, String)> {
         exp: exp_time as usize,
     };
 
-    let secret = env::var("JWT_SECRET").unwrap_or_else(|_| "super_secret_saiyan_key_1337_force".to_string());
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set in environment");
 
     encode(
         &Header::default(),

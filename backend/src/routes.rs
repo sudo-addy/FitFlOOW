@@ -107,6 +107,10 @@ pub struct MealRequest {
 #[derive(Deserialize)]
 pub struct UpdateProfileRequest {
     name: String,
+    height: f64,
+    weight: f64,
+    goal: String,
+    experience: String,
 }
 
 #[derive(Deserialize)]
@@ -753,8 +757,8 @@ pub async fn get_profile(
     auth: AuthUser,
     State(pool): State<SqlitePool>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let row: (i64, String, String, String) = sqlx::query_as(
-        "SELECT id, name, email, tier FROM users WHERE id = ?"
+    let row: (i64, String, String, String, f64, f64, String, String) = sqlx::query_as(
+        "SELECT id, name, email, tier, height, weight, goal, experience FROM users WHERE id = ?"
     )
     .bind(auth.user_id)
     .fetch_one(&pool)
@@ -769,10 +773,10 @@ pub async fn get_profile(
             "tier": row.3,
         },
         "profile": {
-            "height": 183,
-            "weight": 82.4,
-            "goal": "Strength",
-            "experience": "Intermediate",
+            "height": row.4,
+            "weight": row.5,
+            "goal": row.6,
+            "experience": row.7,
             "notifications": { "email": true, "push": true, "sms": false }
         }
     })))
@@ -784,15 +788,19 @@ pub async fn update_profile(
     State(pool): State<SqlitePool>,
     Json(payload): Json<UpdateProfileRequest>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    sqlx::query("UPDATE users SET name = ? WHERE id = ?")
+    sqlx::query("UPDATE users SET name = ?, height = ?, weight = ?, goal = ?, experience = ? WHERE id = ?")
         .bind(&payload.name)
+        .bind(payload.height)
+        .bind(payload.weight)
+        .bind(&payload.goal)
+        .bind(&payload.experience)
         .bind(auth.user_id)
         .execute(&pool)
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    let row: (i64, String, String, String) = sqlx::query_as(
-        "SELECT id, name, email, tier FROM users WHERE id = ?"
+    let row: (i64, String, String, String, f64, f64, String, String) = sqlx::query_as(
+        "SELECT id, name, email, tier, height, weight, goal, experience FROM users WHERE id = ?"
     )
     .bind(auth.user_id)
     .fetch_one(&pool)
@@ -806,6 +814,13 @@ pub async fn update_profile(
             "name": row.1,
             "email": row.2,
             "tier": row.3,
+        },
+        "profile": {
+            "height": row.4,
+            "weight": row.5,
+            "goal": row.6,
+            "experience": row.7,
+            "notifications": { "email": true, "push": true, "sms": false }
         }
     })))
 }

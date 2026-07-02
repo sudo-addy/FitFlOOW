@@ -4,7 +4,7 @@ use axum::{
     Router,
 };
 use std::net::SocketAddr;
-use tower_http::cors::{CorsLayer, Any};
+use tower_http::cors::CorsLayer;
 use tower_http::compression::CompressionLayer;
 use dotenvy::dotenv;
 use std::env;
@@ -25,27 +25,38 @@ async fn main() {
     // Initialize database pool & seed if empty
     let pool = db::init_db().await;
 
-    // CORS configuration — restrict in production via CORS_ORIGIN env var
-    let cors = match env::var("CORS_ORIGIN") {
-        Ok(origin) => {
-            let mut cleaned_origin = origin.trim().to_string();
-            if cleaned_origin.ends_with('/') {
-                cleaned_origin.pop();
+    // CORS configuration — restrict to allowed origins (development local and production domain)
+    let mut allowed_origins = vec![
+        "http://localhost:5173".parse::<http::HeaderValue>().unwrap(),
+    ];
+
+    if let Ok(origin) = env::var("CORS_ORIGIN") {
+        let mut cleaned_origin = origin.trim().to_string();
+        if cleaned_origin.ends_with('/') {
+            cleaned_origin.pop();
+        }
+        if !cleaned_origin.is_empty() {
+            if let Ok(hv) = cleaned_origin.parse::<http::HeaderValue>() {
+                println!("CORS: adding allowed origin {}", cleaned_origin);
+                allowed_origins.push(hv);
             }
-            println!("CORS: restricting to origin {}", cleaned_origin);
-            CorsLayer::new()
-                .allow_origin(cleaned_origin.parse::<http::HeaderValue>().expect("Invalid CORS_ORIGIN value"))
-                .allow_methods(Any)
-                .allow_headers(Any)
         }
-        Err(_) => {
-            println!("CORS: allowing all origins (development mode)");
-            CorsLayer::new()
-                .allow_origin(Any)
-                .allow_methods(Any)
-                .allow_headers(Any)
-        }
-    };
+    } else {
+        allowed_origins.push("https://yourdomain.com".parse::<http::HeaderValue>().unwrap());
+    }
+
+    let cors = CorsLayer::new()
+        .allow_origin(allowed_origins)
+        .allow_methods([
+            http::Method::GET,
+            http::Method::POST,
+            http::Method::PUT,
+            http::Method::DELETE,
+        ])
+        .allow_headers([
+            http::header::AUTHORIZATION,
+            http::header::CONTENT_TYPE,
+        ]);
 
     let auth_routes = Router::new()
         .route("/signup", post(routes::sign_up))

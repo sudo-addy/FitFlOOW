@@ -66,6 +66,9 @@ pub async fn init_db() -> SqlitePool {
 
     let pool = SqlitePool::connect(&database_url).await.expect("Failed to connect to database");
     sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await.ok();
+    sqlx::query("PRAGMA journal_mode = WAL").execute(&pool).await.ok();
+    sqlx::query("PRAGMA synchronous = NORMAL").execute(&pool).await.ok();
+    sqlx::query("PRAGMA cache_size = -64000").execute(&pool).await.ok(); // 64MB cache
 
     // Run migrations
     sqlx::migrate!("./migrations")

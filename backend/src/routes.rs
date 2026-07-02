@@ -50,6 +50,8 @@ pub struct DashboardStats {
     #[serde(rename = "workoutsThisWeek")]
     workouts_this_week: i64,
     streak: i64,
+    #[serde(rename = "bestStreak")]
+    best_streak: i64,
     #[serde(rename = "personalRecords")]
     personal_records: i64,
 }
@@ -260,6 +262,62 @@ pub async fn sign_in(
     ))
 }
 
+fn calculate_streaks(dates: &[String]) -> (i64, i64) {
+    let mut current_streak = 0;
+
+    let today = chrono::Utc::now().naive_utc().date();
+    let yesterday = today.pred_opt().unwrap_or(today);
+
+    let mut parsed_dates = Vec::new();
+    for d_str in dates {
+        if let Ok(d) = chrono::NaiveDate::parse_from_str(d_str, "%Y-%m-%d") {
+            parsed_dates.push(d);
+        }
+    }
+
+    if parsed_dates.is_empty() {
+        return (0, 0);
+    }
+
+    parsed_dates.sort_by(|a, b| b.cmp(a));
+    parsed_dates.dedup();
+
+    let first_date = parsed_dates[0];
+    if first_date == today || first_date == yesterday {
+        current_streak = 1;
+        let mut current = first_date;
+        for next_date in parsed_dates.iter().skip(1) {
+            if current.pred_opt() == Some(*next_date) {
+                current_streak += 1;
+                current = *next_date;
+            } else {
+                break;
+            }
+        }
+    }
+
+    let mut temp_streak = 1;
+    let mut best_streak = 1;
+    let mut current = parsed_dates[0];
+    for next_date in parsed_dates.iter().skip(1) {
+        if current.pred_opt() == Some(*next_date) {
+            temp_streak += 1;
+            current = *next_date;
+        } else {
+            if temp_streak > best_streak {
+                best_streak = temp_streak;
+            }
+            temp_streak = 1;
+            current = *next_date;
+        }
+    }
+    if temp_streak > best_streak {
+        best_streak = temp_streak;
+    }
+
+    (current_streak, best_streak)
+}
+
 // ---- DASHBOARD ----
 pub async fn get_dashboard_stats(
     auth: AuthUser,
@@ -364,23 +422,23 @@ pub async fn get_dashboard_stats(
     .await
     .unwrap_or(0);
 
-    // Streak: count consecutive days with at least 1 workout going backwards from today
-    let streak: i64 = sqlx::query_scalar(
-        "SELECT COUNT(DISTINCT date(date)) FROM workouts
-         WHERE user_id = ?
-         AND date(date) >= date('now', '-30 days')
-         AND date(date) <= date('now')"
+    // Streak: calculate consecutive days with at least 1 workout
+    let dates: Vec<String> = sqlx::query_scalar(
+        "SELECT DISTINCT date(date) FROM workouts WHERE user_id = ? ORDER BY date(date) DESC"
     )
     .bind(auth.user_id)
-    .fetch_one(&pool)
+    .fetch_all(&pool)
     .await
-    .unwrap_or(0);
+    .unwrap_or_default();
+
+    let (current_streak, best_streak) = calculate_streaks(&dates);
 
     Ok(Json(DashboardResponse {
         stats: DashboardStats {
             calories_burned: today_calories,
             workouts_this_week: weekly_count,
-            streak,
+            streak: current_streak,
+            best_streak,
             personal_records: pr_count,
         },
         recent_workouts,
@@ -453,17 +511,16 @@ pub async fn get_workouts_history(
         workouts.as_array_mut().unwrap().push(cw);
     }
 
-    // Streak: count consecutive days with at least 1 workout going backwards from today
-    let streak: i64 = sqlx::query_scalar(
-        "SELECT COUNT(DISTINCT date(date)) FROM workouts
-         WHERE user_id = ?
-         AND date(date) >= date('now', '-30 days')
-         AND date(date) <= date('now')"
+    // Streak: calculate consecutive days with at least 1 workout
+    let dates: Vec<String> = sqlx::query_scalar(
+        "SELECT DISTINCT date(date) FROM workouts WHERE user_id = ? ORDER BY date(date) DESC"
     )
     .bind(auth.user_id)
-    .fetch_one(&pool)
+    .fetch_all(&pool)
     .await
-    .unwrap_or(0);
+    .unwrap_or_default();
+
+    let (_current_streak, best_streak) = calculate_streaks(&dates);
 
     Ok(Json(json!({
         "workouts": workouts,
@@ -471,7 +528,7 @@ pub async fn get_workouts_history(
             "totalWorkouts": total_workouts,
             "totalVolume": total_volume,
             "totalDuration": total_duration,
-            "bestStreak": streak
+            "bestStreak": best_streak
         }
     })))
 }
@@ -524,6 +581,32 @@ pub async fn log_workout(
             .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     }
 
+    // Auto-detect Personal Records (PRs)
+    let mut new_prs = Vec::new();
+    for ex in &payload.exercises {
+        let prev_best: Option<f64> = sqlx::query_scalar(
+            "SELECT MAX(e.weight) FROM exercises e
+             JOIN workouts w ON w.id = e.workout_id
+             WHERE w.user_id = ? AND LOWER(e.name) = LOWER(?) AND w.id != ?"
+        )
+        .bind(auth.user_id)
+        .bind(&ex.name)
+        .bind(workout_id)
+        .fetch_optional(&pool)
+        .await
+        .unwrap_or(None);
+
+        if let Some(best) = prev_best {
+            if ex.weight > best {
+                new_prs.push(json!({
+                    "exercise": ex.name.clone(),
+                    "old_best": best,
+                    "new_best": ex.weight,
+                }));
+            }
+        }
+    }
+
     // Trigger achievement unlocks checking logic
     let workout_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM workouts WHERE user_id = ?")
         .bind(auth.user_id)
@@ -539,7 +622,26 @@ pub async fn log_workout(
             .unwrap_or_default();
     }
 
-    Ok((StatusCode::CREATED, Json(json!({ "message": "Workout logged successfully." }))))
+    Ok((StatusCode::CREATED, Json(json!({
+        "message": "Workout logged successfully.",
+        "new_prs": new_prs
+    }))))
+}
+
+fn get_database_capacity_limit(class_name: &str) -> i64 {
+    match class_name {
+        "Hyperion HIIT" => 3,
+        "Dragon Strength Protocol" => 7,
+        "Zenith Mobility Flow" => 10,
+        "Combat Conditioning" => 1,
+        "Power Ascension" => 6,
+        "Iron Endurance" => 5,
+        "Apex Calisthenics" => 8,
+        "Inferno Cardio" => 19,
+        "Saiyan Surge (Full Body)" => 2,
+        "Recovery & Restore" => 18,
+        _ => 5, // Default limit
+    }
 }
 
 // ---- BOOK CLASS ----
@@ -561,6 +663,22 @@ pub async fn book_class(
 
     if exists {
         return Err((StatusCode::BAD_REQUEST, "You are already booked for this class slot.".to_string()));
+    }
+
+    // Check capacity limit
+    let booked_count: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM class_bookings WHERE class_name = ? AND date = ? AND time = ? AND status = 'Booked'"
+    )
+    .bind(&payload.class_name)
+    .bind(&payload.date)
+    .bind(&payload.time)
+    .fetch_one(&pool)
+    .await
+    .unwrap_or(0);
+
+    let limit = get_database_capacity_limit(&payload.class_name);
+    if booked_count >= limit {
+        return Err((StatusCode::BAD_REQUEST, "This class session is fully booked.".to_string()));
     }
 
     sqlx::query(
@@ -604,7 +722,23 @@ pub async fn get_booked_classes(
         "status": c.7,
     })).collect::<Vec<_>>());
 
-    Ok(Json(json!({ "bookings": bookings })))
+    let counts_rows: Vec<(String, String, String, i32)> = sqlx::query_as(
+        "SELECT class_name, date, time, COUNT(*) FROM class_bookings WHERE status = 'Booked' GROUP BY class_name, date, time"
+    )
+    .fetch_all(&pool)
+    .await
+    .unwrap_or_default();
+
+    let mut class_counts = serde_json::Map::new();
+    for (name, date, time, count) in counts_rows {
+        let key = format!("{}|{}|{}", name, date, time);
+        class_counts.insert(key, serde_json::Value::Number(count.into()));
+    }
+
+    Ok(Json(json!({
+        "bookings": bookings,
+        "classCounts": class_counts
+    })))
 }
 
 // ---- CANCEL CLASS BOOKING ----
@@ -1065,7 +1199,10 @@ pub async fn search_exercises(
         })
     }).collect::<Vec<_>>());
 
-    Ok(Json(json!({ "exercises": exercises })))
+    Ok((
+        [(axum::http::header::CACHE_CONTROL, "public, max-age=3600")],
+        Json(json!({ "exercises": exercises })),
+    ))
 }
 
 #[derive(Deserialize)]

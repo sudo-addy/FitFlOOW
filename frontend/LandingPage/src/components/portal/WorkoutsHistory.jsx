@@ -185,13 +185,31 @@ export default function WorkoutsHistory() {
   const [filter, setFilter] = useState('All Time');
   const [search, setSearch] = useState('');
   const [expandedId, setExpandedId] = useState(null);
+  const [summary, setSummary] = useState({
+    totalWorkouts: 0,
+    totalVolume: 0,
+    totalDuration: 0,
+    bestStreak: 0
+  });
 
   useEffect(() => {
     document.title = 'Workouts | FitFlOOW';
     api.getWorkouts()
       .then((res) => {
-        const mapped = res.map((w) => {
-          const dateObj = new Date(w.created_at || Date.now());
+        const workoutList = res.workouts || (Array.isArray(res) ? res : []);
+        if (res.summary) {
+          setSummary(res.summary);
+        } else {
+          setSummary({
+            totalWorkouts: workoutList.length,
+            totalVolume: workoutList.reduce((a, w) => a + (w.volume || 0), 0),
+            totalDuration: workoutList.reduce((a, w) => a + (w.duration || 0), 0),
+            bestStreak: workoutList.length > 5 ? 14 : 3
+          });
+        }
+
+        const mapped = workoutList.map((w) => {
+          const dateObj = new Date(w.date || w.created_at || Date.now());
           const dateStr = dateObj.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -222,13 +240,28 @@ export default function WorkoutsHistory() {
           };
         });
 
-        // Use backend workouts if present, else fallback to mock ones
-        setWorkouts(mapped.length > 0 ? mapped : allWorkouts);
+        if (mapped.length > 0) {
+          setWorkouts(mapped);
+        } else {
+          setWorkouts(allWorkouts);
+          setSummary({
+            totalWorkouts: allWorkouts.length,
+            totalVolume: allWorkouts.reduce((a, w) => a + w.volume, 0),
+            totalDuration: allWorkouts.reduce((a, w) => a + (parseInt(w.duration) || 0), 0),
+            bestStreak: 14
+          });
+        }
         setLoading(false);
       })
       .catch((err) => {
         console.error('Failed to load workouts:', err);
         setWorkouts(allWorkouts);
+        setSummary({
+          totalWorkouts: allWorkouts.length,
+          totalVolume: allWorkouts.reduce((a, w) => a + w.volume, 0),
+          totalDuration: allWorkouts.reduce((a, w) => a + (parseInt(w.duration) || 0), 0),
+          bestStreak: 14
+        });
         setLoading(false);
       });
   }, []);
@@ -244,12 +277,12 @@ export default function WorkoutsHistory() {
   const toggleExpand = (id) => setExpandedId(expandedId === id ? null : id);
 
   // Dynamic calculations
-  const totalWorkoutsCount = workouts.length;
-  const totalVol = workouts.reduce((a, w) => a + w.volume, 0);
-  const totalDur = workouts.reduce((a, w) => a + (w.rawDuration || parseInt(w.duration) || 0), 0);
+  const totalWorkoutsCount = summary.totalWorkouts;
+  const totalVol = summary.totalVolume;
+  const totalDur = summary.totalDuration;
   const hours = Math.floor(totalDur / 60);
   const mins = totalDur % 60;
-  const bestStreak = workouts.length > 5 ? 14 : 3; // Estimated based on data length
+  const bestStreak = summary.bestStreak;
 
   // Export to CSV
   const exportToCSV = () => {

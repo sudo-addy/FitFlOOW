@@ -1,5 +1,23 @@
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5005/api';
 
+const sanitizeObject = (obj) => {
+  if (obj === null || obj === undefined) return obj;
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeObject);
+  }
+  if (typeof obj === 'object') {
+    const cleaned = {};
+    for (const key of Object.keys(obj)) {
+      cleaned[key] = sanitizeObject(obj[key]);
+    }
+    return cleaned;
+  }
+  if (typeof obj === 'string') {
+    return obj.trim();
+  }
+  return obj;
+};
+
 const getHeaders = () => {
   const token = localStorage.getItem('token');
   return {
@@ -10,6 +28,15 @@ const getHeaders = () => {
 
 async function apiFetch(url, options = {}) {
   try {
+    if (options.body && typeof options.body === 'string') {
+      try {
+        const parsed = JSON.parse(options.body);
+        options.body = JSON.stringify(sanitizeObject(parsed));
+      } catch (e) {
+        // Leave body untouched if JSON parse fails
+      }
+    }
+
     const res = await fetch(url, {
       ...options,
       headers: { ...getHeaders(), ...options.headers },

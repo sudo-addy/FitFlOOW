@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { useToast } from '../../context/ToastContext';
+import { api } from '../../utils/api';
 import './ClassesBooking.css';
 
 const DAYS = [
@@ -293,47 +294,101 @@ const INTENSITY_CONFIG = {
 export default function ClassesBooking() {
   const { showToast } = useToast();
   const [activeDay, setActiveDay] = useState(TODAY_KEY);
-  const [bookedIds, setBookedIds] = useState(new Set(['cls-002', 'cls-007']));
+  const [bookings, setBookings] = useState([]);
+  const [classCounts, setClassCounts] = useState({});
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+
+  const loadBookings = () => {
+    api.getClasses()
+      .then((res) => {
+        setBookings(res.bookings || []);
+        setClassCounts(res.classCounts || {});
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to fetch class bookings:', err);
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     document.title = 'Book Classes | FitFlOOW';
+    loadBookings();
     return () => {
       document.title = 'Saiyan Gym';
     };
   }, []);
 
-  const toggleBook = (id, isFull) => {
-    const allCls = Object.values(CLASS_DATA).flat();
-    const targetClass = allCls.find(c => c.id === id);
-    const className = targetClass ? targetClass.name : 'Class';
+  const getBookingForClass = (cls, dayKey) => {
+    return bookings.find(
+      b => b.className === cls.name && b.date === dayKey && b.time === cls.time && b.status === 'Booked'
+    );
+  };
 
-    if (isFull && !bookedIds.has(id)) {
-      showToast('Class is full! Try another chamber.', 'error');
-      return;
-    }
-
-    setBookedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-        showToast(`Cancelled booking for: ${className}`, 'info');
-      } else {
-        next.add(id);
-        showToast(`Successfully booked: ${className}!`, 'success');
+  const toggleBook = async (cls, dayKey) => {
+    const existing = getBookingForClass(cls, dayKey);
+    if (existing) {
+      try {
+        await api.cancelBooking(existing.id);
+        showToast(`Cancelled booking for: ${cls.name || cls.className}`, 'info');
+        loadBookings();
+      } catch (err) {
+        showToast(err.message || 'Failed to cancel booking.', 'error');
       }
-      return next;
-    });
+    } else {
+      const dbCount = classCounts[`${cls.name}|${dayKey}|${cls.time}`] || 0;
+      const spotsUsed = cls.spotsUsed + dbCount;
+      if (spotsUsed >= cls.spotsTotal) {
+        showToast('Class is full! Try another chamber.', 'error');
+        return;
+      }
+
+      try {
+        await api.bookClass({
+          className: cls.name,
+          date: dayKey,
+          time: cls.time,
+          duration: cls.duration,
+          instructor: cls.instructor,
+          intensity: cls.intensity
+        });
+        showToast(`Successfully booked: ${cls.name}!`, 'success');
+        loadBookings();
+      } catch (err) {
+        showToast(err.message || 'Failed to book session.', 'error');
+      }
+    }
   };
 
   const dayClasses = CLASS_DATA[activeDay] || [];
-  const allBooked = Object.values(CLASS_DATA).flat().filter(c => bookedIds.has(c.id));
 
-  const filteredClasses = dayClasses.filter(c => {
-    if (filter === 'booked') return bookedIds.has(c.id);
-    if (filter === 'available') return !bookedIds.has(c.id) && c.spotsUsed < c.spotsTotal;
+  const filteredClasses = dayClasses.map(cls => {
+    const dbCount = classCounts[`${cls.name}|${activeDay}|${cls.time}`] || 0;
+    const spotsUsed = cls.spotsUsed + dbCount;
+    const isBooked = bookings.some(
+      b => b.className === cls.name && b.date === activeDay && b.time === cls.time && b.status === 'Booked'
+    );
+    return {
+      ...cls,
+      spotsUsed,
+      isBooked
+    };
+  }).filter(c => {
+    if (filter === 'booked') return c.isBooked;
+    if (filter === 'available') return !c.isBooked && c.spotsUsed < c.spotsTotal;
     return true;
   });
+
+  const allBooked = bookings.map(b => ({
+    id: b.id,
+    name: b.className,
+    time: b.time,
+    duration: b.duration,
+    instructor: b.instructor,
+    intensity: b.intensity,
+    dayKey: b.date
+  }));
 
   const CategoryIcon = ({ cat }) => {
     const icons = {
@@ -353,6 +408,16 @@ export default function ClassesBooking() {
     );
   };
 
+  if (loading) {
+    return (
+      <PortalLayout>
+        <div className="classes-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <div className="portal-spinner" />
+        </div>
+      </PortalLayout>
+    );
+  }
+
   return (
     <PortalLayout>
       <div className="classes-page">
@@ -367,11 +432,11 @@ export default function ClassesBooking() {
             </div>
             <div className="classes-header-stats">
               <div className="classes-stat-pill">
-                <span className="classes-stat-num">{bookedIds.size}</span>
+                <span className="classes-stat-num">{bookings.length}</span>
                 <span className="classes-stat-lbl">Booked</span>
               </div>
               <div className="classes-stat-pill classes-stat-pill--gold">
-                <span className="classes-stat-num">3</span>
+                <span className="classes-stat-num">{bookings.length}</span>
                 <span className="classes-stat-lbl">This Week</span>
               </div>
             </div>
@@ -408,8 +473,8 @@ export default function ClassesBooking() {
                 aria-pressed={filter === f}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
-                {f === 'booked' && bookedIds.size > 0 && (
-                  <span className="classes-filter-count">{bookedIds.size}</span>
+                {f === 'booked' && bookings.length > 0 && (
+                  <span className="classes-filter-count">{bookings.length}</span>
                 )}
               </button>
             ))}
@@ -501,7 +566,7 @@ export default function ClassesBooking() {
                   <button
                     id={`classes-book-btn-${cls.id}`}
                     className={`classes-book-btn ${isBooked ? 'classes-book-btn--cancel' : isFull ? 'classes-book-btn--full' : 'classes-book-btn--book'}`}
-                    onClick={() => toggleBook(cls.id, isFull)}
+                    onClick={() => toggleBook(cls, activeDay)}
                     disabled={isFull && !isBooked}
                     aria-label={isBooked ? `Cancel booking for ${cls.name}` : isFull ? `${cls.name} is full` : `Book ${cls.name}`}
                   >
@@ -532,7 +597,7 @@ export default function ClassesBooking() {
                   <button
                     id={`classes-cancel-booked-${cls.id}`}
                     className="classes-cancel-icon-btn"
-                    onClick={() => toggleBook(cls.id, false)}
+                    onClick={() => toggleBook(cls, cls.dayKey)}
                     aria-label={`Cancel booking for ${cls.name}`}
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

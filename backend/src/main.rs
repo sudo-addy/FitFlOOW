@@ -18,6 +18,13 @@ mod routes;
 async fn main() {
     dotenvy::dotenv().ok();
 
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "fitfloow_backend=info,tower_http=info".into()),
+        )
+        .init();
+
     let _ = env::var("JWT_SECRET").expect("FATAL: JWT_SECRET env var is not set");
 
     // Initialize database pool & seed if empty
@@ -35,7 +42,7 @@ async fn main() {
         }
         if !cleaned_origin.is_empty() {
             if let Ok(hv) = cleaned_origin.parse::<http::HeaderValue>() {
-                println!("CORS: adding allowed origin {}", cleaned_origin);
+                tracing::info!("CORS: adding allowed origin {}", cleaned_origin);
                 allowed_origins.push(hv);
             }
         }
@@ -104,12 +111,25 @@ async fn main() {
         .parse()
         .expect("Failed to parse socket address");
 
-    println!("⚡ [Saiyan Gym API] Server running at http://{}", addr);
+    tracing::info!("⚡ [Saiyan Gym API] Server running at http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn health_check() -> &'static str {
-    "healthy"
+async fn health_check(
+    axum::extract::State(pool): axum::extract::State<sqlx::SqlitePool>,
+) -> impl axum::response::IntoResponse {
+    let db_ok = sqlx::query("SELECT 1").fetch_one(&pool).await.is_ok();
+    if db_ok {
+        (
+            axum::http::StatusCode::OK,
+            axum::Json(serde_json::json!({ "status": "healthy", "db": "connected" })),
+        )
+    } else {
+        (
+            axum::http::StatusCode::SERVICE_UNAVAILABLE,
+            axum::Json(serde_json::json!({ "status": "unhealthy", "db": "disconnected" })),
+        )
+    }
 }

@@ -35,7 +35,7 @@ const categoryColor = { Strength: '#ff5500', Cardio: '#ffaa00', Mobility: '#4ade
 
 export default function Dashboard() {
   const [data, setData] = useState({
-    stats: { caloriesBurned: 0, workoutsThisWeek: 0, streak: 0, personalRecords: 0 },
+    stats: { caloriesBurned: 0, workoutsThisWeek: 0, streak: 0, bestStreak: 0, personalRecords: 0 },
     recentWorkouts: [],
     upcomingClasses: []
   });
@@ -127,7 +127,7 @@ export default function Dashboard() {
               <span className="dash-stat-number">{streak}</span>
               <span className="dash-stat-unit">days 🔥</span>
             </div>
-            <div className="dash-streak-msg">Personal best: 21 days</div>
+            <div className="dash-streak-msg">Personal best: {data.stats.bestStreak} {data.stats.bestStreak === 1 ? 'day' : 'days'}</div>
             <div className="portal-card-meta">Don't break the chain!</div>
           </div>
 

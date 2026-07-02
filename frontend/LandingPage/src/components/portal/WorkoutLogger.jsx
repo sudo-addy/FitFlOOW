@@ -272,9 +272,15 @@ export default function WorkoutLogger() {
           completed: ex.sets.some((s) => s.done),
         })),
       };
-      await api.logWorkout(payload);
+      const res = await api.logWorkout(payload);
       setFinished(true);
       showToast(`⚡ Workout logged successfully! +${totalVolume.toLocaleString()} kg total volume`, 'success');
+      
+      if (res && res.new_prs && res.new_prs.length > 0) {
+        res.new_prs.forEach((pr) => {
+          showToast(`🏆 New PR: ${pr.exercise} - ${pr.new_best} kg! (Beats previous ${pr.old_best} kg)`, 'success');
+        });
+      }
     } catch (err) {
       showToast(err.message || 'Failed to save workout session.', 'error');
     }

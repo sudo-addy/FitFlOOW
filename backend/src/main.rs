@@ -8,7 +8,7 @@ use tower_http::cors::CorsLayer;
 use tower_http::compression::CompressionLayer;
 use std::env;
 use std::sync::Arc;
-use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
+use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer, key_extractor::SmartIpKeyExtractor};
 
 mod db;
 mod middleware;
@@ -63,18 +63,21 @@ async fn main() {
             http::header::CONTENT_TYPE,
         ]);
 
-    let governor_conf = GovernorConfigBuilder::default()
-        .per_second(12)
-        .burst_size(5)
-        .finish()
-        .unwrap();
+    let governor_conf = Arc::new(
+        GovernorConfigBuilder::default()
+            .per_second(12)
+            .burst_size(5)
+            .key_extractor(SmartIpKeyExtractor)
+            .finish()
+            .unwrap()
+    );
 
     let auth_routes = Router::new()
         .route("/signup", post(routes::sign_up))
         .route("/login", post(routes::sign_in))
         .route("/forgot-password", post(routes::forgot_password))
         .route("/reset-password", post(routes::reset_password))
-        .layer(GovernorLayer { config: Arc::new(governor_conf) });
+        .layer(GovernorLayer { config: governor_conf });
 
     // Router mapping
     let app = Router::new()
@@ -114,7 +117,7 @@ async fn main() {
     tracing::info!("⚡ [Saiyan Gym API] Server running at http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app.into_make_service_with_connect_info::<std::net::SocketAddr>()).await.unwrap();
 }
 
 async fn health_check(

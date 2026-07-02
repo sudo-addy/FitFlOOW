@@ -81,22 +81,33 @@ export default function ProfileSettings() {
   }, []);
 
   const handleSave = async (section) => {
-    if (section === 'personal') {
+    if (section === 'personal' || section === 'fitness') {
       try {
         const fullName = `${personal.firstName} ${personal.lastName}`.trim();
-        await api.updateProfile(fullName);
+        const payload = {
+          name: fullName,
+          height: parseFloat(fitness.height) || 0.0,
+          weight: parseFloat(fitness.weight) || 0.0,
+          goal: fitness.goal,
+          experience: fitness.experience,
+        };
+        await api.updateProfile(payload);
         updateUser({ name: fullName });
         setSaved((prev) => ({ ...prev, [section]: true }));
         setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
-        showToast('Personal info updated successfully!', 'success');
+        showToast(
+          section === 'personal'
+            ? 'Personal info updated successfully!'
+            : 'Fitness profile updated successfully!',
+          'success'
+        );
       } catch (error) {
-        showToast(error.message || 'Failed to update personal info.', 'error');
+        showToast(error.message || 'Failed to update profile details.', 'error');
       }
     } else {
       setSaved((prev) => ({ ...prev, [section]: true }));
       setTimeout(() => setSaved((prev) => ({ ...prev, [section]: false })), 2200);
       const labels = {
-        fitness: 'Fitness profile',
         prefs: 'Preferences',
         security: 'Security configuration'
       };

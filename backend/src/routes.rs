@@ -116,6 +116,14 @@ pub struct UpdateProfileRequest {
 #[derive(Deserialize)]
 pub struct UpdateTierRequest {
     tier: String,
+    payment_confirmed: bool,
+    payment_token: String,
+}
+
+#[derive(Deserialize)]
+pub struct BodyWeightRequest {
+    weight: f64,
+    date: Option<String>,
 }
 
 // ============================================================
@@ -257,9 +265,15 @@ pub async fn get_dashboard_stats(
     auth: AuthUser,
     State(pool): State<SqlitePool>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    // 1. Get recent workouts with exercises
-    let workouts_rows: Vec<(i64, String, String, i32, f64, i32)> = sqlx::query_as(
-        "SELECT id, name, strftime('%Y-%m-%dT%H:%M:%fZ', date) as date, duration, volume, calories FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5"
+    // 1. Get recent workouts with exercises (using a subquery to limit to 5 workouts, then LEFT JOIN)
+    let rows: Vec<(i64, String, String, i32, f64, i32, Option<i64>, Option<String>, Option<i32>, Option<i32>, Option<f64>, Option<bool>)> = sqlx::query_as(
+        "SELECT w.id, w.name, strftime('%Y-%m-%dT%H:%M:%fZ', w.date), w.duration, w.volume, w.calories,
+                e.id, e.name, e.sets, e.reps, e.weight, e.completed
+         FROM (
+             SELECT * FROM workouts WHERE user_id = ? ORDER BY date DESC LIMIT 5
+         ) w
+         LEFT JOIN exercises e ON e.workout_id = w.id
+         ORDER BY w.date DESC, w.id DESC, e.id ASC"
     )
     .bind(auth.user_id)
     .fetch_all(&pool)
@@ -267,32 +281,40 @@ pub async fn get_dashboard_stats(
     .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     let mut recent_workouts = json!([]);
-    for w in workouts_rows {
-        let exercises_rows: Vec<(i64, String, i32, i32, f64, bool)> = sqlx::query_as(
-            "SELECT id, name, sets, reps, weight, completed FROM exercises WHERE workout_id = ?"
-        )
-        .bind(w.0)
-        .fetch_all(&pool)
-        .await
-        .unwrap_or_default();
+    let mut current_workout: Option<serde_json::Value> = None;
 
-        let w_json = json!({
-            "id": w.0,
-            "name": w.1,
-            "date": w.2,
-            "duration": w.3,
-            "volume": w.4,
-            "calories": w.5,
-            "exercises": exercises_rows.iter().map(|ex| json!({
-                "id": ex.0,
-                "name": ex.1,
-                "sets": ex.2,
-                "reps": ex.3,
-                "weight": ex.4,
-                "completed": ex.5,
-            })).collect::<Vec<_>>()
-        });
-        recent_workouts.as_array_mut().unwrap().push(w_json);
+    for r in rows {
+        let (w_id, w_name, w_date, w_duration, w_volume, w_calories, e_id, e_name, e_sets, e_reps, e_weight, e_completed) = r;
+
+        if current_workout.is_none() || current_workout.as_ref().unwrap()["id"].as_i64() != Some(w_id) {
+            if let Some(cw) = current_workout.take() {
+                recent_workouts.as_array_mut().unwrap().push(cw);
+            }
+            current_workout = Some(json!({
+                "id": w_id,
+                "name": w_name,
+                "date": w_date,
+                "duration": w_duration,
+                "volume": w_volume,
+                "calories": w_calories,
+                "exercises": []
+            }));
+        }
+
+        if let (Some(eid), Some(ename), Some(esets), Some(ereps), Some(eweight), Some(ecompleted)) = (e_id, e_name, e_sets, e_reps, e_weight, e_completed) {
+            current_workout.as_mut().unwrap()["exercises"].as_array_mut().unwrap().push(json!({
+                "id": eid,
+                "name": ename,
+                "sets": esets,
+                "reps": ereps,
+                "weight": eweight,
+                "completed": ecompleted,
+            }));
+        }
+    }
+
+    if let Some(cw) = current_workout {
+        recent_workouts.as_array_mut().unwrap().push(cw);
     }
 
     // 2. Weekly Workouts (last 7 days)
@@ -371,8 +393,13 @@ pub async fn get_workouts_history(
     auth: AuthUser,
     State(pool): State<SqlitePool>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let workouts_rows: Vec<(i64, String, String, i32, f64, i32)> = sqlx::query_as(
-        "SELECT id, name, strftime('%Y-%m-%dT%H:%M:%fZ', date) as date, duration, volume, calories FROM workouts WHERE user_id = ? ORDER BY date DESC"
+    let rows: Vec<(i64, String, String, i32, f64, i32, Option<i64>, Option<String>, Option<i32>, Option<i32>, Option<f64>, Option<bool>)> = sqlx::query_as(
+        "SELECT w.id, w.name, strftime('%Y-%m-%dT%H:%M:%fZ', w.date), w.duration, w.volume, w.calories,
+                e.id, e.name, e.sets, e.reps, e.weight, e.completed
+         FROM workouts w
+         LEFT JOIN exercises e ON e.workout_id = w.id
+         WHERE w.user_id = ?
+         ORDER BY w.date DESC, w.id DESC, e.id ASC"
     )
     .bind(auth.user_id)
     .fetch_all(&pool)
@@ -380,37 +407,51 @@ pub async fn get_workouts_history(
     .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     let mut workouts = json!([]);
-    for w in &workouts_rows {
-        let exercises_rows: Vec<(i64, String, i32, i32, f64, bool)> = sqlx::query_as(
-            "SELECT id, name, sets, reps, weight, completed FROM exercises WHERE workout_id = ?"
-        )
-        .bind(w.0)
-        .fetch_all(&pool)
-        .await
-        .unwrap_or_default();
+    let mut current_workout: Option<serde_json::Value> = None;
+    let mut total_workouts = 0;
+    let mut total_volume = 0.0;
+    let mut total_duration = 0;
+    let mut seen_workouts = std::collections::HashSet::new();
 
-        let w_json = json!({
-            "id": w.0,
-            "name": w.1,
-            "date": w.2,
-            "duration": w.3,
-            "volume": w.4,
-            "calories": w.5,
-            "exercises": exercises_rows.iter().map(|ex| json!({
-                "id": ex.0,
-                "name": ex.1,
-                "sets": ex.2,
-                "reps": ex.3,
-                "weight": ex.4,
-                "completed": ex.5,
-            })).collect::<Vec<_>>()
-        });
-        workouts.as_array_mut().unwrap().push(w_json);
+    for r in rows {
+        let (w_id, w_name, w_date, w_duration, w_volume, w_calories, e_id, e_name, e_sets, e_reps, e_weight, e_completed) = r;
+
+        if seen_workouts.insert(w_id) {
+            total_workouts += 1;
+            total_volume += w_volume;
+            total_duration += w_duration;
+        }
+
+        if current_workout.is_none() || current_workout.as_ref().unwrap()["id"].as_i64() != Some(w_id) {
+            if let Some(cw) = current_workout.take() {
+                workouts.as_array_mut().unwrap().push(cw);
+            }
+            current_workout = Some(json!({
+                "id": w_id,
+                "name": w_name,
+                "date": w_date,
+                "duration": w_duration,
+                "volume": w_volume,
+                "calories": w_calories,
+                "exercises": []
+            }));
+        }
+
+        if let (Some(eid), Some(ename), Some(esets), Some(ereps), Some(eweight), Some(ecompleted)) = (e_id, e_name, e_sets, e_reps, e_weight, e_completed) {
+            current_workout.as_mut().unwrap()["exercises"].as_array_mut().unwrap().push(json!({
+                "id": eid,
+                "name": ename,
+                "sets": esets,
+                "reps": ereps,
+                "weight": eweight,
+                "completed": ecompleted,
+            }));
+        }
     }
 
-    let total_workouts = workouts_rows.len() as i64;
-    let total_volume = workouts_rows.iter().fold(0.0, |sum, w| sum + w.4);
-    let total_duration = workouts_rows.iter().fold(0, |sum, w| sum + w.3);
+    if let Some(cw) = current_workout {
+        workouts.as_array_mut().unwrap().push(cw);
+    }
 
     // Streak: count consecutive days with at least 1 workout going backwards from today
     let streak: i64 = sqlx::query_scalar(
@@ -835,6 +876,28 @@ pub async fn update_tier(
         return Err((StatusCode::BAD_REQUEST, "Invalid tier specified.".to_string()));
     }
 
+    if !payload.payment_confirmed {
+        return Err((StatusCode::PAYMENT_REQUIRED, "Payment has not been confirmed.".to_string()));
+    }
+
+    // Verify the payment token
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set in environment");
+    let token_data = jsonwebtoken::decode::<PaymentClaims>(
+        &payload.payment_token,
+        &jsonwebtoken::DecodingKey::from_secret(secret.as_bytes()),
+        &jsonwebtoken::Validation::default(),
+    )
+    .map_err(|e| (StatusCode::BAD_REQUEST, format!("Invalid or expired payment token: {}", e)))?;
+
+    let claims = token_data.claims;
+    if claims.user_id != auth.user_id {
+        return Err((StatusCode::FORBIDDEN, "Payment token does not match user.".to_string()));
+    }
+
+    if claims.tier != payload.tier {
+        return Err((StatusCode::BAD_REQUEST, "Payment token tier mismatch.".to_string()));
+    }
+
     sqlx::query("UPDATE users SET tier = ? WHERE id = ?")
         .bind(&payload.tier)
         .bind(auth.user_id)
@@ -859,6 +922,55 @@ pub async fn update_tier(
             "tier": row.3,
         }
     })))
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PaymentClaims {
+    pub user_id: i64,
+    pub tier: String,
+    pub exp: usize,
+}
+
+#[derive(Deserialize)]
+pub struct CreatePaymentSessionRequest {
+    tier: String,
+}
+
+#[derive(Serialize)]
+pub struct CreatePaymentSessionResponse {
+    payment_token: String,
+}
+
+// ---- CREATE PAYMENT SESSION ----
+pub async fn create_payment_session(
+    auth: AuthUser,
+    Json(payload): Json<CreatePaymentSessionRequest>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    if payload.tier != "Elite" && payload.tier != "Ascension" {
+        return Err((StatusCode::BAD_REQUEST, "Invalid tier specified.".to_string()));
+    }
+
+    let exp_time = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() + 1800; // 30 mins expiration for payment session
+
+    let claims = PaymentClaims {
+        user_id: auth.user_id,
+        tier: payload.tier,
+        exp: exp_time as usize,
+    };
+
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set in environment");
+
+    let payment_token = encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(secret.as_bytes()),
+    )
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to generate payment token: {}", e)))?;
+
+    Ok(Json(CreatePaymentSessionResponse { payment_token }))
 }
 
 // ---- GET ACHIEVEMENTS ----
@@ -1161,6 +1273,73 @@ pub async fn get_workout_templates(
     }
 
     Ok(Json(templates))
+}
+
+// ---- GET BODY WEIGHT LOGS ----
+pub async fn get_body_weight_logs(
+    auth: AuthUser,
+    State(pool): State<SqlitePool>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    let logs: Vec<(i64, f64, String)> = sqlx::query_as(
+        "SELECT id, weight, date FROM body_weight_logs WHERE user_id = ? ORDER BY date ASC"
+    )
+    .bind(auth.user_id)
+    .fetch_all(&pool)
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    let response: Vec<serde_json::Value> = logs.into_iter().map(|l| {
+        json!({
+            "id": l.0,
+            "weight": l.1,
+            "date": l.2,
+        })
+    }).collect();
+
+    Ok(Json(response))
+}
+
+// ---- LOG BODY WEIGHT ----
+pub async fn log_body_weight(
+    auth: AuthUser,
+    State(pool): State<SqlitePool>,
+    Json(payload): Json<BodyWeightRequest>,
+) -> Result<impl IntoResponse, (StatusCode, String)> {
+    if payload.weight <= 0.0 {
+        return Err((StatusCode::BAD_REQUEST, "Weight must be greater than zero.".to_string()));
+    }
+
+    let date_str = payload.date.unwrap_or_else(|| {
+        chrono::Utc::now().format("%Y-%m-%d").to_string()
+    });
+
+    let id = sqlx::query(
+        "INSERT INTO body_weight_logs (weight, date, user_id) VALUES (?, ?, ?)"
+    )
+    .bind(payload.weight)
+    .bind(&date_str)
+    .bind(auth.user_id)
+    .execute(&pool)
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+    .last_insert_rowid();
+
+    // Keep user profile weight in sync
+    sqlx::query("UPDATE users SET weight = ? WHERE id = ?")
+        .bind(payload.weight)
+        .bind(auth.user_id)
+        .execute(&pool)
+        .await
+        .ok();
+
+    Ok(Json(json!({
+        "message": "Body weight logged successfully.",
+        "log": {
+            "id": id,
+            "weight": payload.weight,
+            "date": date_str,
+        }
+    })))
 }
 
 

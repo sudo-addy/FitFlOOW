@@ -65,6 +65,7 @@ pub async fn init_db() -> SqlitePool {
     }
 
     let pool = SqlitePool::connect(&database_url).await.expect("Failed to connect to database");
+    sqlx::query("PRAGMA foreign_keys = ON").execute(&pool).await.ok();
 
     // Run migrations
     sqlx::migrate!("./migrations")
@@ -299,7 +300,7 @@ async fn seed_exercises_lookup(pool: &SqlitePool) {
     println!("Populating exercises lookup table from exercises.json...");
 
     let file_path = env::var("EXERCISES_JSON_PATH")
-        .unwrap_or_else(|_| "./data/exercises.json".to_string());
+        .unwrap_or_else(|_| "./exercise.json".to_string());
     let file = match File::open(file_path) {
         Ok(f) => f,
         Err(e) => {

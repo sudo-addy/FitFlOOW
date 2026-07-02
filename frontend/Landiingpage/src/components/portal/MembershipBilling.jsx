@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import PortalLayout from './PortalLayout';
 import { api } from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import './MembershipBilling.css';
 
 export default function MembershipBilling() {
   const [copied, setCopied] = useState(false);
   const { user: authUser, updateUser } = useAuth();
+  const { showToast } = useToast();
   const user = authUser || { tier: 'Elite' };
   const plan = (user.tier || 'Elite').toLowerCase();
 
@@ -25,10 +27,15 @@ export default function MembershipBilling() {
 
   const handleTierChange = async (newTier) => {
     try {
-      await api.updateTier(newTier);
+      showToast(`Initiating secure payment session for ${newTier}...`, 'info');
+      // Obtain mock payment token signed by the server
+      const { payment_token } = await api.createPaymentSession(newTier);
+      // Upgrade tier using token verification
+      await api.updateTier(newTier, true, payment_token);
       updateUser({ tier: newTier });
+      showToast(`Access granted! Welcome to the ${newTier} Tier.`, 'success');
     } catch (err) {
-      console.error('Failed to change tier:', err);
+      showToast(err.message || 'Payment authentication failed.', 'error');
     }
   };
 

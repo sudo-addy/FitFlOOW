@@ -88,6 +88,8 @@ async fn main() {
         // Profile & Achievements
         .route("/api/profile", get(routes::get_profile).put(routes::update_profile))
         .route("/api/profile/tier", put(routes::update_tier))
+        .route("/api/payments/create-session", post(routes::create_payment_session))
+        .route("/api/body-weight", get(routes::get_body_weight_logs).post(routes::log_body_weight))
         .route("/api/achievements", get(routes::get_achievements))
         // Exercise Library Lookup
         .route("/api/exercises/search", get(routes::search_exercises))

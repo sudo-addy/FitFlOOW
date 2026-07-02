@@ -539,3 +539,78 @@
   }
 }
 
+/* ---- Body Weight Logging & Line Chart Styling ---- */
+.progress-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.progress-log-weight-btn {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+.progress-log-weight-form {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 85, 0, 0.2);
+  background: rgba(255, 85, 0, 0.02);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.progress-form-fields {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.progress-form-submit-btn {
+  padding: 0.7rem 1.5rem;
+  height: 42px;
+  border-radius: 8px;
+}
+
+.progress-empty-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  color: var(--portal-text-muted);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.weight-svg-container {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.progress-weight-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-grid-line text {
+  font-family: inherit;
+}
+
+

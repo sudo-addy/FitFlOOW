@@ -14,3 +14,5 @@ bcrypt = "0.15"
 tower-http = { version = "0.5", features = ["cors", "compression-full"] }
 dotenvy = "0.15"
 chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+

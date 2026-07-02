@@ -936,12 +936,13 @@ pub async fn forgot_password(
         })));
     }
 
-    // Generate random-ish token using nanoseconds timestamp
-    let now = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_nanos();
-    let token = format!("{:x}", now);
+    // Generate a secure, unpredictable 64-character token
+    use rand::Rng;
+    let token: String = rand::thread_rng()
+        .sample_iter(&rand::distributions::Alphanumeric)
+        .take(64)
+        .map(char::from)
+        .collect();
 
     // Save token to DB with 1 hour expiration
     sqlx::query("UPDATE users SET reset_token = ?, reset_token_expiry = datetime('now', '+1 hour') WHERE email = ?")
